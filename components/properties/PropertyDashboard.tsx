@@ -36,6 +36,8 @@ export default function PropertyDashboard() {
     const newProperty: Property = {
       id: "",
 
+      property_number: 0,
+
       customer_id: "",
 
       property_name: "",
@@ -47,24 +49,22 @@ export default function PropertyDashboard() {
       state: "",
       postcode: "",
 
-      property_type: "Residential",
+      latitude: null,
+      longitude: null,
 
       access_notes: "",
       gate_code: "",
       alarm_code: "",
 
-      latitude: null,
-      longitude: null,
-
-      notes: "",
+      property_notes: "",
 
       is_active: true,
 
-      is_deleted: false,
-      deleted_at: null,
-
       created_at: "",
       updated_at: "",
+
+      is_deleted: false,
+      deleted_at: null,
     };
 
     setSelectedProperty(newProperty);

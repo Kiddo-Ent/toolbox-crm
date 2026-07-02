@@ -6,10 +6,13 @@ import { Customer } from "@/types/customer";
 
 interface CustomerWorkspaceProps {
   customer: Customer;
+
   saveCustomer: (customer: Customer) => Promise<void>;
+
   addCustomer: (
     customer: Omit<Customer, "id" | "created_at" | "updated_at">
   ) => Promise<void>;
+
   removeCustomer: (id: string) => Promise<void>;
 }
 
@@ -36,7 +39,8 @@ export default function CustomerWorkspace({
     }));
   }
 
-  const isNewCustomer = editedCustomer.id === "";
+  const isNewCustomer =
+    editedCustomer.id === "";
 
   async function handleSave() {
     try {
@@ -50,15 +54,24 @@ export default function CustomerWorkspace({
 
         await addCustomer(newCustomer);
 
-        alert("✅ Customer created successfully.");
+        alert(
+          "✅ Customer created successfully."
+        );
       } else {
-        await saveCustomer(editedCustomer);
+        await saveCustomer(
+          editedCustomer
+        );
 
-        alert("✅ Customer saved successfully.");
+        alert(
+          "✅ Customer saved successfully."
+        );
       }
     } catch (err) {
       console.error(err);
-      alert("Unable to save customer.");
+
+      alert(
+        "Unable to save customer."
+      );
     }
   }
 
@@ -74,12 +87,17 @@ export default function CustomerWorkspace({
     }
 
     try {
-      await removeCustomer(editedCustomer.id);
+      await removeCustomer(
+        editedCustomer.id
+      );
 
       alert("Customer deleted.");
     } catch (err) {
       console.error(err);
-      alert("Unable to delete customer.");
+
+      alert(
+        "Unable to delete customer."
+      );
     }
   }
 
@@ -104,7 +122,8 @@ export default function CustomerWorkspace({
 
             <p className="mt-2 text-slate-500">
 
-              Customer #{editedCustomer.customer_number || "New"}
+              Customer #
+              {editedCustomer.customer_number || "New"}
 
             </p>
 
@@ -117,16 +136,17 @@ export default function CustomerWorkspace({
                 : "bg-slate-200 text-slate-700"
             }`}
           >
-            {editedCustomer.is_active ? "Active" : "Inactive"}
+            {editedCustomer.is_active
+              ? "Active"
+              : "Inactive"}
           </span>
 
         </div>
 
       </div>
 
-      <div className="space-y-8 p-8">
-
-        {/* Contact Information */}
+      <div className="space-y-8 p-8"></div>
+              {/* Contact Information */}
 
         <section className="rounded-2xl border border-slate-200 p-6">
 
@@ -137,6 +157,7 @@ export default function CustomerWorkspace({
           <div className="grid gap-6 md:grid-cols-2">
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 First Name
               </label>
@@ -144,13 +165,18 @@ export default function CustomerWorkspace({
               <input
                 value={editedCustomer.first_name}
                 onChange={(e) =>
-                  updateField("first_name", e.target.value)
+                  updateField(
+                    "first_name",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 Last Name
               </label>
@@ -158,74 +184,105 @@ export default function CustomerWorkspace({
               <input
                 value={editedCustomer.last_name}
                 onChange={(e) =>
-                  updateField("last_name", e.target.value)
+                  updateField(
+                    "last_name",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div className="md:col-span-2">
+
               <label className="mb-2 block text-sm font-semibold">
                 Company
               </label>
 
               <input
-                value={editedCustomer.company_name}
+                value={
+                  editedCustomer.company_name ?? ""
+                }
                 onChange={(e) =>
-                  updateField("company_name", e.target.value)
+                  updateField(
+                    "company_name",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 Mobile Phone
               </label>
 
               <input
-                value={editedCustomer.mobile_phone}
+                value={
+                  editedCustomer.mobile_phone ?? ""
+                }
                 onChange={(e) =>
-                  updateField("mobile_phone", e.target.value)
+                  updateField(
+                    "mobile_phone",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 Home Phone
               </label>
 
               <input
-                value={editedCustomer.home_phone}
+                value={
+                  editedCustomer.home_phone ?? ""
+                }
                 onChange={(e) =>
-                  updateField("home_phone", e.target.value)
+                  updateField(
+                    "home_phone",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div className="md:col-span-2">
+
               <label className="mb-2 block text-sm font-semibold">
                 Email
               </label>
 
               <input
                 type="email"
-                value={editedCustomer.email}
+                value={
+                  editedCustomer.email ?? ""
+                }
                 onChange={(e) =>
-                  updateField("email", e.target.value)
+                  updateField(
+                    "email",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
           </div>
 
         </section>
-
-        {/* Address */}
+                {/* Address */}
 
         <section className="rounded-2xl border border-slate-200 p-6">
 
@@ -236,73 +293,98 @@ export default function CustomerWorkspace({
           <div className="grid gap-6 md:grid-cols-2">
 
             <div className="md:col-span-2">
+
               <label className="mb-2 block text-sm font-semibold">
                 Address Line 1
               </label>
 
               <input
-                value={editedCustomer.address_line_1}
+                value={editedCustomer.address_line_1 ?? ""}
                 onChange={(e) =>
-                  updateField("address_line_1", e.target.value)
+                  updateField(
+                    "address_line_1",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div className="md:col-span-2">
+
               <label className="mb-2 block text-sm font-semibold">
                 Address Line 2
               </label>
 
               <input
-                value={editedCustomer.address_line_2}
+                value={editedCustomer.address_line_2 ?? ""}
                 onChange={(e) =>
-                  updateField("address_line_2", e.target.value)
+                  updateField(
+                    "address_line_2",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 Suburb
               </label>
 
               <input
-                value={editedCustomer.suburb}
+                value={editedCustomer.suburb ?? ""}
                 onChange={(e) =>
-                  updateField("suburb", e.target.value)
+                  updateField(
+                    "suburb",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 State
               </label>
 
               <input
-                value={editedCustomer.state}
+                value={editedCustomer.state ?? ""}
                 onChange={(e) =>
-                  updateField("state", e.target.value)
+                  updateField(
+                    "state",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
             <div>
+
               <label className="mb-2 block text-sm font-semibold">
                 Postcode
               </label>
 
               <input
-                value={editedCustomer.postcode}
+                value={editedCustomer.postcode ?? ""}
                 onChange={(e) =>
-                  updateField("postcode", e.target.value)
+                  updateField(
+                    "postcode",
+                    e.target.value
+                  )
                 }
                 className="w-full rounded-xl border px-4 py-3"
               />
+
             </div>
 
           </div>
@@ -319,17 +401,19 @@ export default function CustomerWorkspace({
 
           <textarea
             rows={6}
-            value={editedCustomer.notes}
+            value={editedCustomer.notes ?? ""}
             onChange={(e) =>
-              updateField("notes", e.target.value)
+              updateField(
+                "notes",
+                e.target.value
+              )
             }
-            className="w-full rounded-xl border px-4 py-3 resize-none"
+            className="w-full resize-none rounded-xl border px-4 py-3"
             placeholder="Customer notes..."
           />
 
         </section>
-
-        {/* Actions */}
+                {/* Actions */}
 
         <section className="rounded-2xl border border-slate-200 p-6">
 
@@ -361,12 +445,14 @@ export default function CustomerWorkspace({
             </button>
 
             {!isNewCustomer && (
+
               <button
                 onClick={handleDelete}
                 className="rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
               >
                 🗑 Delete Customer
               </button>
+
             )}
 
           </div>
@@ -374,7 +460,7 @@ export default function CustomerWorkspace({
         </section>
 
       </div>
+  
+    );
 
-    </div>
-  );
 }

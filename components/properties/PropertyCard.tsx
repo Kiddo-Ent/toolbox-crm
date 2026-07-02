@@ -75,9 +75,9 @@ export default function PropertyCard({
                 </p>
               )}
 
-              {property.property_type && (
-                <p>
-                  🏷 {property.property_type}
+              {property.property_notes && (
+                <p className="truncate">
+               📝 {property.property_notes}
                 </p>
               )}
 

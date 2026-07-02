@@ -28,13 +28,28 @@ export default function PropertyList({
         property.property_name
           .toLowerCase()
           .includes(text) ||
+
         property.address_line_1
           .toLowerCase()
           .includes(text) ||
+
+        (property.address_line_2 ?? "")
+          .toLowerCase()
+          .includes(text) ||
+
         property.suburb
           .toLowerCase()
           .includes(text) ||
-        property.property_type
+
+        property.state
+          .toLowerCase()
+          .includes(text) ||
+
+        property.postcode
+          .toLowerCase()
+          .includes(text) ||
+
+        (property.property_notes ?? "")
           .toLowerCase()
           .includes(text)
       );
@@ -55,8 +70,6 @@ export default function PropertyList({
         <p className="mt-1 text-sm text-slate-500">
           {filteredProperties.length} of {properties.length} properties
         </p>
-
-        {/* Search */}
 
         <input
           type="text"

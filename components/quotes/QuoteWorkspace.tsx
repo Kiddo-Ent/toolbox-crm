@@ -639,13 +639,7 @@ export default function QuoteWorkspace({
 
                 deleted_at: null,
 
-                updated_at: "",
-
-                is_deleted: false,
-
-                deleted_at: null,
-
-              };
+               };
 
               setItems((current) => [
                 ...current,

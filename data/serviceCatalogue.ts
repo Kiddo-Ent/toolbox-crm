@@ -1,6 +1,6 @@
-import { Service } from "@/types/service";
+import { ServiceCatalogueItem } from "@/types/service";
 
-export const serviceCatalogue: Service[] = [
+export const serviceCatalogue: ServiceCatalogueItem[] = [
   {
     id: 1,
     name: "Fence Repair",

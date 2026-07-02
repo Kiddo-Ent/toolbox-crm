@@ -47,7 +47,7 @@ export async function createProperty(
     Property,
     "id" | "created_at" | "updated_at"
   >
-) {
+): Promise<Property> {
   const { data, error } = await supabase
     .from("properties")
     .insert(property)
@@ -67,7 +67,7 @@ export async function createProperty(
  */
 export async function updateProperty(
   property: Property
-) {
+): Promise<Property> {
   const { data, error } = await supabase
     .from("properties")
     .update({
@@ -82,8 +82,6 @@ export async function updateProperty(
       state: property.state,
       postcode: property.postcode,
 
-      property_type: property.property_type,
-
       access_notes: property.access_notes,
       gate_code: property.gate_code,
       alarm_code: property.alarm_code,
@@ -91,7 +89,7 @@ export async function updateProperty(
       latitude: property.latitude,
       longitude: property.longitude,
 
-      notes: property.notes,
+      property_notes: property.property_notes,
 
       is_active: property.is_active,
     })
@@ -112,7 +110,7 @@ export async function updateProperty(
  */
 export async function deleteProperty(
   id: string
-) {
+): Promise<void> {
   const { error } = await supabase
     .from("properties")
     .update({

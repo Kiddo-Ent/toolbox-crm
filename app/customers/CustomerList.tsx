@@ -29,12 +29,12 @@ export default function CustomerList({
         `${customer.first_name} ${customer.last_name}`.toLowerCase();
 
       return (
-        fullName.includes(text) ||
-        customer.company_name.toLowerCase().includes(text) ||
-        customer.email.toLowerCase().includes(text) ||
-        customer.mobile_phone.toLowerCase().includes(text) ||
-        customer.suburb.toLowerCase().includes(text)
-      );
+  fullName.includes(text) ||
+  (customer.company_name ?? "").toLowerCase().includes(text) ||
+  (customer.email ?? "").toLowerCase().includes(text) ||
+  (customer.mobile_phone ?? "").toLowerCase().includes(text) ||
+  (customer.suburb ?? "").toLowerCase().includes(text)
+);
     });
   }, [customers, search]);
 
