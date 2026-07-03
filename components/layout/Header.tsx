@@ -1,8 +1,30 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { supabase } from "@/lib/supabase/client";
 
 export default function Header() {
+  const router = useRouter();
+
+  const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function loadUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        setUserEmail(user.email ?? "");
+      }
+    }
+
+    loadUser();
+  }, []);
+
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
 
@@ -21,6 +43,15 @@ export default function Header() {
     });
   }, []);
 
+  async function handleLogout() {
+    setLoading(true);
+
+    await supabase.auth.signOut();
+
+    router.replace("/login");
+    router.refresh();
+  }
+
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
 
@@ -31,7 +62,7 @@ export default function Header() {
         <div>
 
           <h1 className="text-3xl font-bold text-slate-800">
-            {greeting}, Gary 👋
+            {greeting} 👋
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
@@ -60,7 +91,6 @@ export default function Header() {
 
           <button
             className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-100"
-            title="Notifications"
           >
             🔔
           </button>
@@ -69,23 +99,24 @@ export default function Header() {
 
           <button
             className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-100"
-            title="Settings"
           >
             ⚙️
           </button>
 
-          {/* Profile */}
+          {/* User */}
 
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
+          <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
-              G
+              {userEmail
+                ? userEmail.charAt(0).toUpperCase()
+                : "G"}
             </div>
 
             <div>
 
               <p className="font-semibold text-slate-800">
-                Gary Lock
+                {userEmail || "Loading..."}
               </p>
 
               <p className="text-sm text-slate-500">
@@ -93,6 +124,14 @@ export default function Header() {
               </p>
 
             </div>
+
+            <button
+              onClick={handleLogout}
+              disabled={loading}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
+            >
+              {loading ? "Signing Out..." : "Sign Out"}
+            </button>
 
           </div>
 
