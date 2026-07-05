@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
 import { WebsiteLead } from "@/types/websiteLead";
 
@@ -8,7 +8,7 @@ import { WebsiteLead } from "@/types/websiteLead";
 export async function findCustomerByEmail(
   email: string
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("customers")
     .select("*")
     .eq("email", email)
@@ -26,7 +26,7 @@ export async function findCustomerByEmail(
 export async function createCustomer(
   lead: WebsiteLead
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin 
     .from("customers")
     .insert({
       first_name: lead.first_name,
@@ -55,7 +55,7 @@ export async function findProperty(
   customerId: string,
   lead: WebsiteLead
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("properties")
     .select("*")
     .eq("customer_id", customerId)
@@ -76,7 +76,7 @@ export async function createProperty(
   customerId: string,
   lead: WebsiteLead
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin 
     .from("properties")
     .insert({
       customer_id: customerId,
@@ -106,7 +106,7 @@ export async function createOpportunity(
   propertyId: string,
   lead: WebsiteLead
 ) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("opportunities")
     .insert({
       customer_id: customerId,
