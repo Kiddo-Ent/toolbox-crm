@@ -12,9 +12,11 @@ export async function getCustomers(): Promise<Customer[]> {
     .order("last_name")
     .order("first_name");
 
+  console.log("CUSTOMERS:", data);
+  console.log("ERROR:", error);
+
   if (error) {
-    console.error("getCustomers:", error);
-    return [];
+    throw error;
   }
 
   return data as Customer[];
