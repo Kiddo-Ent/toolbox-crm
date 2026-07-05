@@ -99,22 +99,20 @@ export async function POST(
 
   } catch (error) {
 
-    console.error("===== LEAD API ERROR =====");
-  console.error(error);
+  console.error("===== LEAD API ERROR =====");
+  console.dir(error, { depth: null });
 
-  if (error instanceof Error) {
-    console.error(error.stack);
+  return NextResponse.json(
+    {
+      success: false,
+      error,
+    },
+    {
+      status: 500,
+    }
+  );
 
-    return NextResponse.json(
-      {
-        success: false,
-        message: error.message,
-      },
-      {
-        status: 400,
-      }
-    );
-  }
+}
 
   return NextResponse.json(
     {
