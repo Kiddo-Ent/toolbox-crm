@@ -124,17 +124,22 @@ export async function createOpportunity(
 
       description: lead.description,
 
-      status: "Lead",
+      source: lead.source ?? "Website",
+
+      opportunity_status: "New",
 
       estimated_value:
-        lead.estimated_budget ?? 0,
+        lead.estimated_budget
+          ? Number(lead.estimated_budget)
+          : null,
 
-      expected_close_date:
-        lead.preferred_date,
+      expected_start_date:
+        lead.preferred_date || null,
+
+      probability: 50,
 
       notes:
         `Website Lead\n\n` +
-        `Source: ${lead.source}\n` +
         `Submitted: ${lead.submitted_at}`,
 
       is_deleted: false,
