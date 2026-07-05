@@ -99,9 +99,7 @@ export async function POST(
 
   } catch (error) {
 
-    catch (error) {
-
-  console.error("===== LEAD API ERROR =====");
+    console.error("===== LEAD API ERROR =====");
   console.error(error);
 
   if (error instanceof Error) {
