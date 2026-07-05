@@ -99,25 +99,35 @@ export async function POST(
 
   } catch (error) {
 
-    console.error(
-      "Lead API Error:",
-      error
-    );
+    catch (error) {
+
+  console.error("===== LEAD API ERROR =====");
+  console.error(error);
+
+  if (error instanceof Error) {
+    console.error(error.stack);
 
     return NextResponse.json(
       {
         success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unable to process lead.",
+        message: error.message,
       },
       {
         status: 400,
       }
     );
-
   }
+
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Unknown server error.",
+    },
+    {
+      status: 500,
+    }
+  );
+
 }
 
 /**
