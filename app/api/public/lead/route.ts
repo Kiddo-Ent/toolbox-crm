@@ -128,6 +128,8 @@ export async function POST(
 
 }
 
+}
+
 /**
  * Reject GET requests
  */
