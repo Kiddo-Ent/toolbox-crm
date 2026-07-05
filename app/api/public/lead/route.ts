@@ -114,18 +114,6 @@ export async function POST(
 
 }
 
-  return NextResponse.json(
-    {
-      success: false,
-      message: "Unknown server error.",
-    },
-    {
-      status: 500,
-    }
-  );
-
-}
-
 }
 
 /**
