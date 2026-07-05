@@ -26,7 +26,7 @@ export async function findCustomerByEmail(
 export async function createCustomer(
   lead: WebsiteLead
 ) {
-  const { data, error } = await supabaseAdmin 
+  const { data, error } = await supabaseAdmin
     .from("customers")
     .insert({
       first_name: lead.first_name,
@@ -34,8 +34,15 @@ export async function createCustomer(
 
       company_name: lead.company_name,
 
-      email: lead.email,
       mobile_phone: lead.mobile_phone,
+      email: lead.email,
+
+      address_line_1: lead.address_line_1,
+      address_line_2: lead.address_line_2,
+
+      suburb: lead.suburb,
+      state: lead.state,
+      postcode: lead.postcode,
 
       is_active: true,
       is_deleted: false,
