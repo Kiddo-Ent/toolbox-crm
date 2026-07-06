@@ -1,48 +1,24 @@
 "use client";
 
-interface ScheduleItem {
-  id: number;
-  time: string;
-  customer: string;
-  job: string;
-  location: string;
-  colour: string;
-}
-
-const todaySchedule: ScheduleItem[] = [
-  {
-    id: 1,
-    time: "8:00 AM",
-    customer: "John Smith",
-    job: "Fence Repair",
-    location: "Inverloch",
-    colour: "bg-blue-500",
-  },
-  {
-    id: 2,
-    time: "10:30 AM",
-    customer: "Mary Jones",
-    job: "Pressure Washing",
-    location: "Venus Bay",
-    colour: "bg-emerald-500",
-  },
-  {
-    id: 3,
-    time: "2:00 PM",
-    customer: "David Brown",
-    job: "Security Camera Installation",
-    location: "Cape Paterson",
-    colour: "bg-amber-500",
-  },
-];
+import { useJobs } from "@/hooks/useJobs";
 
 export default function ScheduleCard() {
+  const { jobs } = useJobs();
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const todaysJobs = jobs.filter(
+    (job) =>
+      job.scheduled_date === today &&
+      !job.is_deleted
+  );
+
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm hover:shadow-lg transition-shadow">
+    <div className="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
 
       {/* Header */}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
 
         <div>
 
@@ -50,8 +26,9 @@ export default function ScheduleCard() {
             Today's Schedule
           </h2>
 
-          <p className="text-sm text-slate-500 mt-1">
-            {todaySchedule.length} scheduled jobs
+          <p className="mt-1 text-sm text-slate-500">
+            {todaysJobs.length} scheduled job
+            {todaysJobs.length !== 1 ? "s" : ""}
           </p>
 
         </div>
@@ -62,67 +39,87 @@ export default function ScheduleCard() {
 
       </div>
 
-      {/* Schedule */}
+      {/* Jobs */}
 
-      <div className="space-y-5">
+      {todaysJobs.length === 0 ? (
 
-        {todaySchedule.map((item) => (
+        <div className="py-12 text-center">
 
-          <div
-            key={item.id}
-            className="flex gap-4 rounded-xl border border-slate-200 p-4 hover:bg-slate-50 transition"
-          >
+          <div className="mb-4 text-5xl">
+            📅
+          </div>
 
-            {/* Timeline */}
+          <h3 className="text-lg font-semibold text-slate-700">
+            No jobs scheduled today
+          </h3>
 
-            <div className="flex flex-col items-center">
+          <p className="mt-2 text-slate-500">
+            Jobs scheduled for today will appear here.
+          </p>
 
-              <div
-                className={`h-4 w-4 rounded-full ${item.colour}`}
-              />
+        </div>
 
-              <div className="mt-2 h-full w-0.5 bg-slate-200" />
+      ) : (
 
-            </div>
+        <div className="space-y-4">
 
-            {/* Details */}
+          {todaysJobs.map((job) => (
 
-            <div className="flex-1">
+            <div
+              key={job.id}
+              className="rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50"
+            >
 
               <div className="flex items-center justify-between">
 
-                <p className="font-bold text-slate-800">
-                  {item.job}
-                </p>
+                <h3 className="font-semibold text-slate-800">
+                  {job.title}
+                </h3>
 
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                  {item.time}
+                  #{job.job_number}
                 </span>
 
               </div>
 
-              <p className="mt-2 text-slate-600">
-                {item.customer}
-              </p>
+              {job.description && (
+                <p className="mt-2 text-sm text-slate-500">
+                  {job.description}
+                </p>
+              )}
 
-              <p className="text-sm text-slate-400">
-                📍 {item.location}
-              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+
+                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                  {job.priority}
+                </span>
+
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                  {job.status}
+                </span>
+
+                {job.estimated_hours > 0 && (
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                    {job.estimated_hours} hrs
+                  </span>
+                )}
+
+              </div>
 
             </div>
 
-          </div>
+          ))}
 
-        ))}
+        </div>
 
-      </div>
+      )}
 
       {/* Footer */}
 
       <button
         className="mt-6 w-full rounded-xl border border-blue-600 py-3 font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white"
       >
-        View Full Schedule
+        View Jobs
       </button>
 
     </div>
