@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useOpportunities } from "@/hooks/useOpportunities";
 import { Quote } from "@/types/quote";
 import { QuoteItem } from "@/types/quoteItem";
@@ -41,23 +42,65 @@ export default function QuoteWorkspace({
     useState<Quote>(quote);
     const [items, setItems] =
     useState<QuoteItem[]>([]);
-const customerOpportunities = opportunities.filter(
-  (o) =>
-    o.customer_id === editedQuote.customer_id &&
-    !o.is_deleted
-);
+    const searchParams = useSearchParams();
+
+const selectedCustomerId =
+  searchParams.get("customer") ??
+  editedQuote.customer_id;
+
+const customerOpportunities =
+  opportunities.filter(
+    o =>
+      o.customer_id === selectedCustomerId &&
+      !o.is_deleted
+  );
   useEffect(() => {
 
-    setEditedQuote(quote);
-  
+  const customerId =
+    searchParams.get("customer");
 
-    // Existing quotes will later load their
-    // items from Supabase.
-    // New quotes begin with an empty list.
+  const opportunityId =
+    searchParams.get("opportunity");
 
-    setItems([]);
+  const propertyId =
+    searchParams.get("property");
 
-  }, [quote]);
+  setEditedQuote({
+
+    ...quote,
+
+    customer_id:
+      customerId ??
+      quote.customer_id,
+
+    opportunity_id:
+      opportunityId ??
+      quote.opportunity_id,
+
+    property_id:
+      propertyId ??
+      quote.property_id,
+
+  });
+  if (customerId) {
+
+  const customer =
+    customers.find(
+      (c) => c.id === customerId
+    );
+
+  if (customer) {
+
+    setCustomerSearch(
+      `${customer.first_name} ${customer.last_name}`
+    );
+
+  }
+
+}
+  setItems([]);
+
+}, [quote, searchParams]);
 
   const isNewQuote =
     editedQuote.id === "";

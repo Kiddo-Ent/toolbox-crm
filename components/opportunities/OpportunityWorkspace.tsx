@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { Opportunity } from "@/types/opportunity";
 
 interface OpportunityWorkspaceProps {
@@ -48,7 +48,7 @@ export default function OpportunityWorkspace({
       [field]: value,
     }));
   }
-
+  const router = useRouter();
   const isNewOpportunity =
     editedOpportunity.id === "";
 
@@ -658,11 +658,18 @@ export default function OpportunityWorkspace({
               {/* Create Quote */}
 
               <button
-                type="button"
-                className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-              >
-                📄 Create Quote
-              </button>
+  type="button"
+  onClick={() => {
+
+    router.push(
+  `/quotes?customer=${editedOpportunity.customer_id}&opportunity=${editedOpportunity.id}&property=${editedOpportunity.property_id}`
+);
+
+  }}
+  className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+>
+  📄 Create Quote
+</button>
 
               {/* Convert to Job */}
 
