@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useOpportunities } from "@/hooks/useOpportunities";
 import { Quote } from "@/types/quote";
 import { QuoteItem } from "@/types/quoteItem";
-
+import { useCustomers } from "@/hooks/useCustomers";
 import QuoteItemsGrid from "./QuoteItemsGrid";
 
 interface QuoteWorkspaceProps {
@@ -32,16 +32,24 @@ export default function QuoteWorkspace({
   addQuote,
   removeQuote,
 }: QuoteWorkspaceProps) {
-
+  const { customers } = useCustomers();
+  const { opportunities } = useOpportunities();
+  const [customerSearch, setCustomerSearch] = useState("");
+  
+  const [showCustomers, setShowCustomers] = useState(false);
   const [editedQuote, setEditedQuote] =
     useState<Quote>(quote);
-
-  const [items, setItems] =
+    const [items, setItems] =
     useState<QuoteItem[]>([]);
-
+const customerOpportunities = opportunities.filter(
+  (o) =>
+    o.customer_id === editedQuote.customer_id &&
+    !o.is_deleted
+);
   useEffect(() => {
 
     setEditedQuote(quote);
+  
 
     // Existing quotes will later load their
     // items from Supabase.
@@ -180,22 +188,77 @@ export default function QuoteWorkspace({
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="block text-sm font-semibold mb-2">
+  Customer
+</label>
 
-                Customer ID
+<div className="relative">
 
-              </label>
+  <input
+    type="text"
+    placeholder="Start typing a customer name..."
+    value={customerSearch}
+    onChange={(e) => {
+      setCustomerSearch(e.target.value);
+      setShowCustomers(true);
+    }}
+    onFocus={() => setShowCustomers(true)}
+    className="w-full rounded-lg border px-4 py-3"
+  />
 
-              <input
-                value={editedQuote.customer_id}
-                onChange={(e) =>
-                  updateField(
-                    "customer_id",
-                    e.target.value
-                  )
-                }
-                className="w-full rounded-lg border px-4 py-3"
-              />
+  {showCustomers && customerSearch.length > 0 && (
+
+    <div className="absolute z-50 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
+
+      {customers
+        .filter((customer) => {
+          const fullName =
+            `${customer.first_name} ${customer.last_name}`.toLowerCase();
+
+          return fullName.includes(
+            customerSearch.toLowerCase()
+          );
+        })
+        .slice(0, 10)
+        .map((customer) => (
+
+          <button
+            key={customer.id}
+            type="button"
+            onClick={() => {
+
+              updateField(
+                "customer_id",
+                customer.id
+              );
+
+              setCustomerSearch(
+                `${customer.first_name} ${customer.last_name}`
+              );
+
+              setShowCustomers(false);
+
+            }}
+            className="block w-full border-b px-4 py-3 text-left hover:bg-slate-100"
+          >
+
+            <div className="font-medium">
+              {customer.first_name} {customer.last_name}
+            </div>
+
+            <div className="text-sm text-slate-500">
+              {customer.email}
+            </div>
+
+          </button>
+
+      ))}
+
+    </div>
+
+  )}
+
+</div>
 
             </div>
 
@@ -224,26 +287,61 @@ export default function QuoteWorkspace({
 
             {/* Opportunity */}
 
-            <div>
+<div>
 
-              <label className="mb-2 block text-sm font-semibold">
+  <label className="mb-2 block text-sm font-semibold">
+    Opportunity
+  </label>
 
-                Opportunity ID
+  <select
+    value={editedQuote.opportunity_id}
+    onChange={(e) => {
 
-              </label>
+      updateField(
+        "opportunity_id",
+        e.target.value
+      );
 
-              <input
-                value={editedQuote.opportunity_id}
-                onChange={(e) =>
-                  updateField(
-                    "opportunity_id",
-                    e.target.value
-                  )
-                }
-                className="w-full rounded-lg border px-4 py-3"
-              />
+      const selectedOpportunity =
+        customerOpportunities.find(
+          (o) => o.id === e.target.value
+        );
 
-            </div>
+      if (selectedOpportunity) {
+
+        updateField(
+          "property_id",
+          selectedOpportunity.property_id
+        );
+
+       
+      }
+
+    }}
+    disabled={!editedQuote.customer_id}
+    className="w-full rounded-lg border px-4 py-3"
+  >
+
+    <option value="">
+      {editedQuote.customer_id
+        ? "Select an opportunity..."
+        : "Select a customer first"}
+    </option>
+
+    {customerOpportunities.map((opportunity) => (
+
+      <option
+        key={opportunity.id}
+        value={opportunity.id}
+      >
+        {opportunity.title}
+      </option>
+
+    ))}
+
+  </select>
+
+</div>
 
             {/* Status */}
 
