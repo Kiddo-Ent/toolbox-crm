@@ -1,34 +1,49 @@
 "use client";
 
-interface RevenueMetric {
-  label: string;
-  value: string;
-  change: string;
-  positive: boolean;
-}
+import { useMemo } from "react";
 
-const metrics: RevenueMetric[] = [
-  {
-    label: "Today",
-    value: "$1,820",
-    change: "+8%",
-    positive: true,
-  },
-  {
-    label: "This Week",
-    value: "$8,540",
-    change: "+14%",
-    positive: true,
-  },
-  {
-    label: "This Month",
-    value: "$48,250",
-    change: "+12%",
-    positive: true,
-  },
-];
+import { useJobs } from "@/hooks/useJobs";
 
 export default function RevenueCard() {
+  const { jobs } = useJobs();
+
+  const revenue = useMemo(() => {
+    const completedJobs = jobs.filter(
+      (job) =>
+        !job.is_deleted &&
+        job.status === "Completed"
+    );
+
+    const totalRevenue = completedJobs.reduce(
+      (sum, job) => sum + (job.total_cost ?? 0),
+      0
+    );
+
+    const totalLabour = completedJobs.reduce(
+      (sum, job) => sum + (job.labour_cost ?? 0),
+      0
+    );
+
+    const totalMaterials = completedJobs.reduce(
+      (sum, job) => sum + (job.materials_cost ?? 0),
+      0
+    );
+
+    return {
+      completedJobs: completedJobs.length,
+      totalRevenue,
+      totalLabour,
+      totalMaterials,
+    };
+  }, [jobs]);
+
+  function formatCurrency(value: number) {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
     <div className="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
 
@@ -43,7 +58,7 @@ export default function RevenueCard() {
           </h2>
 
           <p className="mt-1 text-sm text-slate-500">
-            Financial performance
+            Live financial summary
           </p>
 
         </div>
@@ -54,60 +69,76 @@ export default function RevenueCard() {
 
       </div>
 
-      {/* Main Figure */}
+      {/* Total Revenue */}
 
       <div className="mb-8">
 
         <p className="text-sm text-slate-500">
-          Monthly Revenue
+          Completed Job Revenue
         </p>
 
         <h1 className="mt-2 text-5xl font-bold text-slate-800">
-          $48,250
+          ${formatCurrency(revenue.totalRevenue)}
         </h1>
 
-        <p className="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-          ▲ 12% vs last month
+        <p className="mt-3 text-sm text-slate-500">
+          Based on {revenue.completedJobs} completed job
+          {revenue.completedJobs !== 1 ? "s" : ""}
         </p>
 
       </div>
 
-      {/* Revenue Breakdown */}
+      {/* Breakdown */}
 
       <div className="space-y-4">
 
-        {metrics.map((metric) => (
+        <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
 
-          <div
-            key={metric.label}
-            className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4"
-          >
+          <div>
 
-            <div>
+            <p className="text-sm text-slate-500">
+              Labour
+            </p>
 
-              <p className="text-sm text-slate-500">
-                {metric.label}
-              </p>
-
-              <p className="mt-1 text-xl font-bold text-slate-800">
-                {metric.value}
-              </p>
-
-            </div>
-
-            <span
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                metric.positive
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-rose-100 text-rose-700"
-              }`}
-            >
-              {metric.change}
-            </span>
+            <p className="mt-1 text-xl font-bold text-slate-800">
+              ${formatCurrency(revenue.totalLabour)}
+            </p>
 
           </div>
 
-        ))}
+        </div>
+
+        <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
+
+          <div>
+
+            <p className="text-sm text-slate-500">
+              Materials
+            </p>
+
+            <p className="mt-1 text-xl font-bold text-slate-800">
+              ${formatCurrency(revenue.totalMaterials)}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
+
+          <div>
+
+            <p className="text-sm text-slate-500">
+              Completed Jobs
+            </p>
+
+            <p className="mt-1 text-xl font-bold text-slate-800">
+              {revenue.completedJobs}
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 

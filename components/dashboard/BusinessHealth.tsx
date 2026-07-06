@@ -1,43 +1,17 @@
 "use client";
 
+import { useMemo } from "react";
+
+import { useCustomers } from "@/hooks/useCustomers";
+import { useJobs } from "@/hooks/useJobs";
+import { useOpportunities } from "@/hooks/useOpportunities";
+import { useQuotes } from "@/hooks/useQuotes";
+
 interface HealthItem {
   title: string;
-  value: string;
+  value: number;
   status: "good" | "warning" | "alert";
 }
-
-const healthItems: HealthItem[] = [
-  {
-    title: "Active Customers",
-    value: "412",
-    status: "good",
-  },
-  {
-    title: "Jobs Scheduled Today",
-    value: "8",
-    status: "good",
-  },
-  {
-    title: "Pending Quotes",
-    value: "5",
-    status: "warning",
-  },
-  {
-    title: "Overdue Invoices",
-    value: "2",
-    status: "alert",
-  },
-  {
-    title: "Vehicles Requiring Service",
-    value: "0",
-    status: "good",
-  },
-  {
-    title: "Staff Clocked In",
-    value: "6",
-    status: "good",
-  },
-];
 
 function statusColour(status: HealthItem["status"]) {
   switch (status) {
@@ -65,26 +39,94 @@ function statusColour(status: HealthItem["status"]) {
 }
 
 export default function BusinessHealth() {
-  const warningCount = healthItems.filter(
-    (item) => item.status !== "good"
-  ).length;
+  const { customers } = useCustomers();
+  const { jobs } = useJobs();
+  const { opportunities } = useOpportunities();
+  const { quotes } = useQuotes();
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const healthItems = useMemo<HealthItem[]>(() => {
+    const activeCustomers =
+      customers.filter((c) => !c.is_deleted).length;
+
+    const jobsToday =
+      jobs.filter(
+        (j) =>
+          !j.is_deleted &&
+          j.scheduled_date === today
+      ).length;
+
+    const openOpportunities =
+      opportunities.filter(
+        (o) =>
+          !o.is_deleted &&
+          !["Won", "Lost", "Cancelled"].includes(
+            o.opportunity_status
+          )
+      ).length;
+
+    const draftQuotes =
+      quotes.filter(
+        (q) =>
+          q.quote_status === "Draft" ||
+          q.quote_status === "Sent"
+      ).length;
+
+    return [
+      {
+        title: "Active Customers",
+        value: activeCustomers,
+        status: "good",
+      },
+      {
+        title: "Jobs Scheduled Today",
+        value: jobsToday,
+        status: jobsToday > 0 ? "good" : "warning",
+      },
+      {
+        title: "Open Opportunities",
+        value: openOpportunities,
+        status:
+          openOpportunities > 0
+            ? "good"
+            : "warning",
+      },
+      {
+        title: "Pending Quotes",
+        value: draftQuotes,
+        status:
+          draftQuotes > 0
+            ? "warning"
+            : "good",
+      },
+    ];
+  }, [customers, jobs, opportunities, quotes, today]);
+
+  const warningCount =
+    healthItems.filter(
+      (item) => item.status !== "good"
+    ).length;
 
   const overallStatus =
     warningCount === 0
       ? {
           title: "Business Healthy",
-          colour: "bg-emerald-100 text-emerald-700",
+          colour:
+            "bg-emerald-100 text-emerald-700",
           icon: "🟢",
         }
       : warningCount <= 2
       ? {
           title: "Minor Issues",
-          colour: "bg-amber-100 text-amber-700",
+          colour:
+            "bg-amber-100 text-amber-700",
           icon: "🟡",
         }
       : {
           title: "Needs Attention",
-          colour: "bg-rose-100 text-rose-700",
+          colour:
+            "bg-rose-100 text-rose-700",
           icon: "🔴",
         };
 
@@ -126,7 +168,8 @@ export default function BusinessHealth() {
             </p>
 
             <h3 className="mt-2 text-3xl font-bold text-slate-800">
-              {overallStatus.icon} {overallStatus.title}
+              {overallStatus.icon}{" "}
+              {overallStatus.title}
             </h3>
 
           </div>
@@ -134,7 +177,8 @@ export default function BusinessHealth() {
           <span
             className={`rounded-full px-4 py-2 text-sm font-semibold ${overallStatus.colour}`}
           >
-            {warningCount} Issue{warningCount === 1 ? "" : "s"}
+            {warningCount} Issue
+            {warningCount === 1 ? "" : "s"}
           </span>
 
         </div>
@@ -196,9 +240,7 @@ export default function BusinessHealth() {
 
       {/* Footer */}
 
-      <button
-        className="mt-8 w-full rounded-xl border border-emerald-600 py-3 font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
-      >
+      <button className="mt-8 w-full rounded-xl border border-emerald-600 py-3 font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white">
         View Operational Report
       </button>
 

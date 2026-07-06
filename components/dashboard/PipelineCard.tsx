@@ -1,49 +1,63 @@
 "use client";
 
-interface PipelineStage {
-  name: string;
-  count: number;
-  value: string;
-  colour: string;
-  width: string;
-}
+import { useMemo } from "react";
 
-const pipeline: PipelineStage[] = [
-  {
-    name: "Draft",
-    count: 6,
-    value: "$8,450",
-    colour: "bg-slate-500",
-    width: "w-2/5",
-  },
-  {
-    name: "Sent",
-    count: 4,
-    value: "$12,980",
-    colour: "bg-blue-500",
-    width: "w-3/5",
-  },
-  {
-    name: "Accepted",
-    count: 12,
-    value: "$28,760",
-    colour: "bg-emerald-500",
-    width: "w-full",
-  },
-  {
-    name: "Declined",
-    count: 2,
-    value: "$3,120",
-    colour: "bg-red-500",
-    width: "w-1/5",
-  },
-];
+import { useOpportunities } from "@/hooks/useOpportunities";
 
 export default function PipelineCard() {
-  const totalQuotes = pipeline.reduce(
-    (sum, stage) => sum + stage.count,
-    0
-  );
+  const { opportunities } = useOpportunities();
+
+  const stages = useMemo(() => {
+    const stageNames = [
+      "New",
+      "Contacted",
+      "Site Visit Booked",
+      "Quoted",
+      "Won",
+      "Lost",
+      "Cancelled",
+    ];
+
+    const total = opportunities.length;
+
+    return stageNames.map((stage) => {
+      const stageOpportunities = opportunities.filter(
+        (o) =>
+          !o.is_deleted &&
+          o.opportunity_status === stage
+      );
+
+      const count = stageOpportunities.length;
+
+      const value = stageOpportunities.reduce(
+        (sum, o) => sum + (o.estimated_value ?? 0),
+        0
+      );
+
+      const percentage =
+        total === 0
+          ? 0
+          : Math.round((count / total) * 100);
+
+      return {
+        name: stage,
+        count,
+        value,
+        percentage,
+      };
+    });
+  }, [opportunities]);
+
+  const totalOpportunities = opportunities.filter(
+    (o) => !o.is_deleted
+  ).length;
+
+  function formatCurrency(value: number) {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   return (
     <div className="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
@@ -55,11 +69,11 @@ export default function PipelineCard() {
         <div>
 
           <h2 className="text-xl font-bold text-slate-800">
-            Quote Pipeline
+            Opportunity Pipeline
           </h2>
 
           <p className="mt-1 text-sm text-slate-500">
-            Current quote status
+            Live sales pipeline
           </p>
 
         </div>
@@ -75,11 +89,11 @@ export default function PipelineCard() {
       <div className="mb-8 rounded-xl bg-slate-50 p-5">
 
         <p className="text-sm text-slate-500">
-          Active Quotes
+          Active Opportunities
         </p>
 
         <h1 className="mt-2 text-5xl font-bold text-slate-800">
-          {totalQuotes}
+          {totalOpportunities}
         </h1>
 
         <p className="mt-2 text-sm text-slate-500">
@@ -92,7 +106,7 @@ export default function PipelineCard() {
 
       <div className="space-y-6">
 
-        {pipeline.map((stage) => (
+        {stages.map((stage) => (
 
           <div key={stage.name}>
 
@@ -105,7 +119,7 @@ export default function PipelineCard() {
                 </p>
 
                 <p className="text-sm text-slate-500">
-                  {stage.value}
+                  ${formatCurrency(stage.value)}
                 </p>
 
               </div>
@@ -116,10 +130,13 @@ export default function PipelineCard() {
 
             </div>
 
-            <div className="h-3 rounded-full bg-slate-200">
+            <div className="h-3 overflow-hidden rounded-full bg-slate-200">
 
               <div
-                className={`h-3 rounded-full ${stage.colour} ${stage.width}`}
+                className="h-3 rounded-full bg-blue-600 transition-all"
+                style={{
+                  width: `${stage.percentage}%`,
+                }}
               />
 
             </div>
@@ -135,7 +152,7 @@ export default function PipelineCard() {
       <button
         className="mt-8 w-full rounded-xl border border-blue-600 py-3 font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white"
       >
-        View All Quotes
+        View Opportunities
       </button>
 
     </div>
