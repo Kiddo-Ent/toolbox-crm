@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 import { Customer } from "@/types/customer";
 
 /**
@@ -12,8 +12,9 @@ export async function getCustomers(): Promise<Customer[]> {
     .order("last_name")
     .order("first_name");
 
-  console.log("CUSTOMERS:", data);
-  console.log("ERROR:", error);
+  console.log("========== CUSTOMERS ==========");
+  console.log("Data:", data);
+  console.log("Error:", error);
 
   if (error) {
     throw error;

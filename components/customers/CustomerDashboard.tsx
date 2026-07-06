@@ -81,7 +81,7 @@ export default function CustomerDashboard() {
       </div>
     );
   }
-
+    console.log("Rendering customers:", customers);
   return (
     <div className="relative flex h-screen bg-gray-100">
 

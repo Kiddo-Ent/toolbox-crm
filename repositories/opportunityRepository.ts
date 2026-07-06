@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 import { Opportunity } from "@/types/opportunity";
 
 /**
@@ -13,12 +13,16 @@ export async function getOpportunities(): Promise<Opportunity[]> {
       ascending: false,
     });
 
+  console.log("===== OPPORTUNITIES =====");
+  console.log("Data:", data);
+  console.log("Error:", error);
+
   if (error) {
     console.error("getOpportunities:", error);
-    return [];
+    throw error;
   }
 
-  return data as Opportunity[];
+  return (data ?? []) as Opportunity[];
 }
 
 /**
@@ -57,10 +61,7 @@ export async function createOpportunity(
     .single();
 
   if (error) {
-    console.error(
-      "createOpportunity:",
-      error
-    );
+    console.error("createOpportunity:", error);
     throw error;
   }
 
@@ -76,32 +77,26 @@ export async function updateOpportunity(
   const { data, error } = await supabase
     .from("opportunities")
     .update({
-      opportunity_number:
-        opportunity.opportunity_number,
+      title: opportunity.title,
 
-      customer_id:
-        opportunity.customer_id,
+      description: opportunity.description,
 
-      property_id:
-        opportunity.property_id,
+      source: opportunity.source,
 
-      title:
-        opportunity.title,
-
-      description:
-        opportunity.description,
-
-      status:
-        opportunity.status,
+      opportunity_status:
+        opportunity.opportunity_status,
 
       estimated_value:
         opportunity.estimated_value,
 
-      expected_close_date:
-        opportunity.expected_close_date,
+      expected_start_date:
+        opportunity.expected_start_date,
 
-      assigned_to:
-        opportunity.assigned_to,
+      expected_completion_date:
+        opportunity.expected_completion_date,
+
+      probability:
+        opportunity.probability,
 
       notes:
         opportunity.notes,
@@ -111,10 +106,7 @@ export async function updateOpportunity(
     .single();
 
   if (error) {
-    console.error(
-      "updateOpportunity:",
-      error
-    );
+    console.error("updateOpportunity:", error);
     throw error;
   }
 
@@ -136,10 +128,7 @@ export async function deleteOpportunity(
     .eq("id", id);
 
   if (error) {
-    console.error(
-      "deleteOpportunity:",
-      error
-    );
+    console.error("deleteOpportunity:", error);
     throw error;
   }
 }

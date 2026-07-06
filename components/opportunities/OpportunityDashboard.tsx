@@ -37,33 +37,37 @@ export default function OpportunityDashboard() {
 
   function createNewOpportunity() {
     const newOpportunity: Opportunity = {
-      id: "",
+  id: "",
 
-      opportunity_number: 0,
+  opportunity_number: 0,
 
-      customer_id: "",
-      property_id: "",
+  customer_id: "",
+  property_id: "",
 
-      title: "",
+  title: "",
 
-      description: null,
+  description: null,
 
-      status: "Lead",
+  source: "Website",
 
-      estimated_value: 0,
+  opportunity_status: "New",
 
-      expected_close_date: null,
+  estimated_value: null,
 
-      assigned_to: null,
+  expected_start_date: null,
 
-      notes: null,
+  expected_completion_date: null,
 
-      is_deleted: false,
-      deleted_at: null,
+  probability: 50,
 
-      created_at: "",
-      updated_at: "",
-    };
+  notes: null,
+
+  is_deleted: false,
+  deleted_at: null,
+
+  created_at: "",
+  updated_at: "",
+};
 
     setSelectedOpportunity(newOpportunity);
   }
@@ -79,7 +83,7 @@ export default function OpportunityDashboard() {
           .toLowerCase()
           .includes(searchText) ||
 
-        opportunity.status
+        opportunity.opportunity_status
           .toLowerCase()
           .includes(searchText) ||
 

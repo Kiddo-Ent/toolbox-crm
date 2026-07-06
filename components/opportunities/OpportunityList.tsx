@@ -27,29 +27,27 @@ export default function OpportunityList({
     if (!text) return opportunities;
 
     return opportunities.filter((opportunity) => {
-
       return (
-
         opportunity.title
           .toLowerCase()
           .includes(text) ||
 
-        opportunity.status
+        opportunity.opportunity_status
+          .toLowerCase()
+          .includes(text) ||
+
+        (opportunity.description ?? "")
           .toLowerCase()
           .includes(text) ||
 
         String(
           opportunity.opportunity_number
         ).includes(text)
-
       );
-
     });
-
   }, [opportunities, search]);
 
   return (
-
     <div className="flex h-full flex-col rounded-2xl bg-white shadow-sm">
 
       {/* Header */}
@@ -64,8 +62,6 @@ export default function OpportunityList({
           {filteredOpportunities.length} of{" "}
           {opportunities.length} opportunities
         </p>
-
-        {/* Search */}
 
         <input
           type="text"
@@ -111,7 +107,7 @@ export default function OpportunityList({
               </h3>
 
               <p className="mt-2 text-sm text-slate-500">
-                Try another search term.
+                Website enquiries and sales opportunities will appear here.
               </p>
 
             </div>
@@ -155,15 +151,11 @@ export default function OpportunityList({
         <div className="flex items-center justify-between">
 
           <span className="text-sm text-slate-500">
-
             {filteredOpportunities.length} displayed
-
           </span>
 
           <span className="text-sm font-medium text-slate-600">
-
             Total: {opportunities.length}
-
           </span>
 
         </div>
@@ -171,7 +163,5 @@ export default function OpportunityList({
       </div>
 
     </div>
-
   );
-
 }

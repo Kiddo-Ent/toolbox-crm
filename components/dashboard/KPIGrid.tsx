@@ -52,11 +52,11 @@ export default function KPIGrid() {
       />
 
       <KPICard
-        title="Quotes"
-        value={awaitingQuotes.length.toString()}
-        subtitle="Draft / Sent"
-        colour="amber"
-        icon="📝"
+       title="Open Opportunities"
+       value={opportunities.length.toString()}
+       subtitle="Website enquiries & sales leads"
+       colour="amber"
+       icon="💼"
       />
 
       <KPICard

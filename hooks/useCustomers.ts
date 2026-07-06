@@ -23,6 +23,8 @@ export function useCustomers() {
       const data = await getCustomers();
 
       setCustomers(data);
+      console.log("Customers loaded:", data.length);
+      console.table(data);
 
       setError(null);
     } catch (err) {

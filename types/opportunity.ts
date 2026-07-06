@@ -11,13 +11,17 @@ export interface Opportunity {
 
   description: string | null;
 
-  status: string;
+  source: string;
 
-  estimated_value: number;
+  opportunity_status: string;
 
-  expected_close_date: string | null;
+  estimated_value: number | null;
 
-  assigned_to: string | null;
+  expected_start_date: string | null;
+
+  expected_completion_date: string | null;
+
+  probability: number;
 
   notes: string | null;
 

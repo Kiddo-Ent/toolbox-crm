@@ -88,11 +88,12 @@ export default function OpportunityWorkspace({
             <span
               className="px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold"
             >
-              {editedOpportunity.status}
+              {editedOpportunity.opportunity_status}
             </span>
 
           </div>
 
+        </div>
         </div>
 
         {/* ====================================================== */}
@@ -134,22 +135,22 @@ export default function OpportunityWorkspace({
               </label>
 
               <select
-                value={editedOpportunity.status}
+                value={editedOpportunity.opportunity_status}
                 onChange={(e) =>
                   updateField(
-                    "status",
+                    "opportunity_status",
                     e.target.value
                   )
                 }
                 className="w-full rounded-lg border px-4 py-3"
               >
-                <option>Lead</option>
-                <option>Site Visit</option>
-                <option>Quoting</option>
-                <option>Quote Sent</option>
-                <option>Negotiating</option>
+                <option>New</option>
+                <option>Contacted</option>
+                <option>Site Visit Booked</option>
+                <option>Quoted</option>
                 <option>Won</option>
                 <option>Lost</option>
+                <option>Cancelled</option>
               </select>
 
             </div>
@@ -250,11 +251,13 @@ export default function OpportunityWorkspace({
                 <input
                   type="number"
                   step="0.01"
-                  value={editedOpportunity.estimated_value}
+                  value={editedOpportunity.estimated_value ?? ""}
                   onChange={(e) =>
                     updateField(
                       "estimated_value",
-                      Number(e.target.value)
+                      e.target.value === ""
+                        ? null
+                        : Number(e.target.value)
                     )
                   }
                   className="w-full rounded-lg border pl-8 pr-4 py-3"
@@ -264,57 +267,29 @@ export default function OpportunityWorkspace({
 
             </div>
 
-            {/* Expected Close Date */}
+            {/* Expected Start Date */}
 
             <div>
 
               <label className="block text-sm font-semibold mb-2">
-                Expected Close Date
+                Expected Start Date
               </label>
 
               <input
                 type="date"
-                value={
-                  editedOpportunity.expected_close_date ?? ""
-                }
+                value={editedOpportunity.expected_start_date ?? ""}
                 onChange={(e) =>
                   updateField(
-                    "expected_close_date",
+                    "expected_start_date",
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
-              />
-
-            </div>
-
-            {/* Assigned To */}
-
-            <div className="md:col-span-2">
-
-              <label className="block text-sm font-semibold mb-2">
-                Assigned To
-              </label>
-
-              <input
-                value={
-                  editedOpportunity.assigned_to ?? ""
-                }
-                onChange={(e) =>
-                  updateField(
-                    "assigned_to",
-                    e.target.value || null
-                  )
-                }
-                placeholder="Employee responsible for this opportunity"
                 className="w-full rounded-lg border px-4 py-3"
               />
 
             </div>
 
           </div>
-
-        </div>
 
         {/* ====================================================== */}
         {/* Description */}
@@ -348,30 +323,18 @@ export default function OpportunityWorkspace({
         {/* ====================================================== */}
 
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-sm p-8 mb-6 border border-blue-100">
-
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-
             <div>
-
-              <p className="text-sm text-slate-500">
-                Status
-              </p>
-
+              <p className="text-sm text-slate-500">Status</p>
               <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.status}
+                {editedOpportunity.opportunity_status}
               </p>
-
             </div>
-
             <div>
-
-              <p className="text-sm text-slate-500">
-                Estimated Value
-              </p>
-
+              <p className="text-sm text-slate-500">Estimated Value</p>
               <p className="mt-2 text-xl font-bold text-green-600">
                 $
-                {editedOpportunity.estimated_value.toLocaleString(
+                {(editedOpportunity.estimated_value ?? 0).toLocaleString(
                   undefined,
                   {
                     minimumFractionDigits: 2,
@@ -379,35 +342,20 @@ export default function OpportunityWorkspace({
                   }
                 )}
               </p>
-
             </div>
-
             <div>
-
-              <p className="text-sm text-slate-500">
-                Expected Close
-              </p>
-
+              <p className="text-sm text-slate-500">Source</p>
               <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.expected_close_date || "Not Set"}
+                {editedOpportunity.source}
               </p>
-
             </div>
-
             <div>
-
-              <p className="text-sm text-slate-500">
-                Assigned To
-              </p>
-
+              <p className="text-sm text-slate-500">Expected Close</p>
               <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.assigned_to || "Unassigned"}
+                {editedOpportunity.expected_start_date || "Not Set"}
               </p>
-
             </div>
-
           </div>
-
         </div>
                 {/* ====================================================== */}
         {/* Internal Notes */}
@@ -604,19 +552,19 @@ export default function OpportunityWorkspace({
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-7">
 
             {[
-              "Lead",
-              "Site Visit",
-              "Quoting",
-              "Quote Sent",
-              "Negotiating",
-              "Won",
-              "Lost",
-            ].map((stage) => (
+  "New",
+  "Contacted",
+  "Site Visit Booked",
+  "Quoted",
+  "Won",
+  "Lost",
+  "Cancelled",
+].map((stage) => (
 
               <div
                 key={stage}
                 className={`rounded-xl border p-4 text-center transition ${
-                  editedOpportunity.status === stage
+                  editedOpportunity.opportunity_status === stage
                     ? "border-blue-600 bg-blue-600 text-white shadow-lg"
                     : "border-slate-200 bg-white"
                 }`}

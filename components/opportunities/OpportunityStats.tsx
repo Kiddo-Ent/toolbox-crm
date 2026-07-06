@@ -19,7 +19,6 @@ function StatCard({
   colour,
   icon,
 }: StatCardProps) {
-
   const colours = {
     blue: {
       border: "border-blue-500",
@@ -50,7 +49,6 @@ function StatCard({
       className={`rounded-2xl border-t-4 ${c.border} bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg`}
     >
       <div className="flex items-center justify-between">
-
         <h3 className="text-sm font-semibold text-slate-500">
           {title}
         </h3>
@@ -58,11 +56,9 @@ function StatCard({
         <div className={`${c.bg} rounded-xl px-3 py-2`}>
           <span className="text-2xl">{icon}</span>
         </div>
-
       </div>
 
       <div className="mt-6">
-
         <h2 className="text-4xl font-bold text-slate-800">
           {value}
         </h2>
@@ -70,32 +66,28 @@ function StatCard({
         <p className={`mt-3 text-sm font-semibold ${c.text}`}>
           {subtitle}
         </p>
-
       </div>
     </div>
   );
 }
 
 export default function OpportunityStats() {
-
   const { opportunities } = useOpportunities();
 
   const stats = useMemo(() => {
-
     const open = opportunities.filter(
-      o =>
-        o.status !== "Won" &&
-        o.status !== "Lost"
+      (o) =>
+        o.opportunity_status !== "Won" &&
+        o.opportunity_status !== "Lost" &&
+        o.opportunity_status !== "Cancelled"
     );
 
     const quoting = opportunities.filter(
-      o =>
-        o.status === "Quoting" ||
-        o.status === "Quote Sent"
+      (o) => o.opportunity_status === "Quoted"
     );
 
     const won = opportunities.filter(
-      o => o.status === "Won"
+      (o) => o.opportunity_status === "Won"
     );
 
     const pipelineValue = open.reduce(
@@ -109,13 +101,10 @@ export default function OpportunityStats() {
       won,
       pipelineValue,
     };
-
   }, [opportunities]);
 
   return (
-
     <div className="grid gap-6 lg:grid-cols-4">
-
       <StatCard
         title="Open Opportunities"
         value={stats.open.length.toString()}
@@ -125,11 +114,11 @@ export default function OpportunityStats() {
       />
 
       <StatCard
-        title="Quoting"
+        title="Quoted"
         value={stats.quoting.length.toString()}
-        subtitle="Preparing Quotes"
+        subtitle="Quotes Sent"
         colour="amber"
-        icon="📄"
+        icon="📝"
       />
 
       <StatCard
@@ -146,13 +135,10 @@ export default function OpportunityStats() {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`}
-        subtitle="Estimated Value"
+        subtitle="Estimated Opportunity Value"
         colour="purple"
         icon="📈"
       />
-
     </div>
-
   );
-
 }
