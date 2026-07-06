@@ -50,9 +50,27 @@ export async function createQuote(
     "id" | "created_at" | "updated_at"
   >
 ): Promise<Quote> {
+
+  // Get the highest existing quote number
+
+  const { data: lastQuote } = await supabase
+    .from("quotes")
+    .select("quote_number")
+    .order("quote_number", {
+      ascending: false,
+    })
+    .limit(1)
+    .maybeSingle();
+
+  const nextQuoteNumber =
+    (lastQuote?.quote_number ?? 1000) + 1;
+
   const { data, error } = await supabase
     .from("quotes")
-    .insert(quote)
+    .insert({
+      ...quote,
+      quote_number: nextQuoteNumber,
+    })
     .select()
     .single();
 
@@ -63,7 +81,6 @@ export async function createQuote(
 
   return data as Quote;
 }
-
 /**
  * Update a quote
  */
