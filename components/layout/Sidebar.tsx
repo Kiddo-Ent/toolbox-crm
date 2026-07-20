@@ -21,11 +21,6 @@ const navigation: NavItem[] = [
     icon: "👥",
   },
   {
-    label: "Properties",
-    href: "/properties",
-    icon: "🏡",
-  },
-  {
     label: "Opportunities",
     href: "/opportunities",
     icon: "💼",
@@ -33,17 +28,17 @@ const navigation: NavItem[] = [
   {
     label: "Quotes",
     href: "/quotes",
-    icon: "📝",
+    icon: "📄",
   },
   {
-    label: "Jobs",
-    href: "/jobs",
+    label: "Calendar",
+    href: "/calendar",
     icon: "📅",
   },
   {
-    label: "Services",
-    href: "/services",
-    icon: "🛠",
+    label: "Invoices",
+    href: "/invoices",
+    icon: "💰",
   },
 ];
 
@@ -51,74 +46,72 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col bg-slate-900 text-white shadow-2xl">
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 text-white">
 
       {/* Logo */}
 
-      <div className="border-b border-slate-800 px-8 py-8">
-
-        <h1 className="text-3xl font-black">
-          ToolBox
+      <div className="border-b border-slate-800 px-6 py-6">
+        <h1 className="text-2xl font-bold">
+          ToolBox CRM
         </h1>
 
-        <p className="mt-2 text-sm text-slate-400">
-          Business Management Suite
+        <p className="mt-1 text-sm text-slate-400">
+          Gary the Handyman
         </p>
-
       </div>
 
       {/* Navigation */}
 
-      <nav className="flex-1 overflow-y-auto px-4 py-6">
+      <nav className="flex-1 px-3 py-5">
 
         {navigation.map((item) => {
 
           const active = pathname === item.href;
 
           return (
-
             <Link
               key={item.href}
               href={item.href}
-              className={`mb-2 flex items-center gap-4 rounded-xl px-5 py-4 transition-all duration-200 ${
+              className={`mb-1 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
                 active
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-blue-600 text-white"
                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
               }`}
             >
+              <span className="text-xl">{item.icon}</span>
 
-              <span className="text-2xl">
-                {item.icon}
-              </span>
-
-              <span className="font-medium">
-                {item.label}
-              </span>
+              <span>{item.label}</span>
 
             </Link>
-
           );
-
         })}
 
       </nav>
 
-      {/* Footer */}
+      {/* Settings */}
 
-      <div className="border-t border-slate-800 p-6">
+      <div className="border-t border-slate-800 p-3">
 
-        <div className="rounded-xl bg-slate-800 p-4">
+        <Link
+          href="/settings"
+          className={`mb-3 flex items-center gap-3 rounded-lg px-4 py-3 transition ${
+            pathname === "/settings"
+              ? "bg-blue-600 text-white"
+              : "text-slate-300 hover:bg-slate-800 hover:text-white"
+          }`}
+        >
+          <span className="text-xl">⚙️</span>
+          <span>Settings</span>
+        </Link>
 
-          <p className="text-sm font-semibold">
-            ToolBox Pro
+        <div className="border-t border-slate-800 pt-4">
+
+          <p className="text-sm font-medium">
+            Gary Lock
           </p>
 
-          <p className="mt-1 text-xs text-slate-400">
-            Built for Australian Trades & Services
-          </p>
-
-          <p className="mt-3 text-xs text-slate-500">
-            Version 1.0
+          <p className="text-xs text-slate-400">
+            Administrator
           </p>
 
         </div>

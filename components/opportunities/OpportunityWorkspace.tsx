@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Opportunity } from "@/types/opportunity";
+import PhotoGallery from "@/components/photos/PhotoGallery";
+import Modal from "@/components/ui/Modal";
 
 interface OpportunityWorkspaceProps {
   opportunity: Opportunity;
@@ -29,17 +31,22 @@ export default function OpportunityWorkspace({
   addOpportunity,
   removeOpportunity,
 }: OpportunityWorkspaceProps) {
+  const router = useRouter();
 
   const [editedOpportunity, setEditedOpportunity] =
     useState<Opportunity>(opportunity);
+
+  const [showPhotos, setShowPhotos] =
+    useState(false);
 
   useEffect(() => {
     setEditedOpportunity(opportunity);
   }, [opportunity]);
 
-  function updateField<
-    K extends keyof Opportunity
-  >(
+  const isNewOpportunity =
+    editedOpportunity.id === "";
+
+  function updateField<K extends keyof Opportunity>(
     field: K,
     value: Opportunity[K]
   ) {
@@ -48,89 +55,43 @@ export default function OpportunityWorkspace({
       [field]: value,
     }));
   }
-  const router = useRouter();
-  const isNewOpportunity =
-    editedOpportunity.id === "";
 
   return (
+    <div className="flex-1 overflow-y-auto bg-slate-50">
 
-    <div className="flex-1 overflow-y-auto">
-
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="mx-auto max-w-6xl p-6 space-y-6">
 
         {/* ====================================================== */}
         {/* Header */}
         {/* ====================================================== */}
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
             <div>
 
-              <h1 className="text-3xl font-bold text-slate-800">
+              <p className="text-sm font-medium text-slate-500">
+                Opportunity
+              </p>
 
+              <h1 className="mt-1 text-3xl font-bold text-slate-900">
                 {isNewOpportunity
                   ? "New Opportunity"
                   : editedOpportunity.title}
-
               </h1>
 
-              <p className="mt-2 text-slate-500">
-
+              <p className="mt-2 text-sm text-slate-500">
                 Opportunity #
+                {" "}
                 {editedOpportunity.opportunity_number || "New"}
-
               </p>
 
             </div>
 
-            <span
-              className="px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold"
-            >
-              {editedOpportunity.opportunity_status}
-            </span>
+            <div className="w-full lg:w-64">
 
-          </div>
-
-        </div>
-        </div>
-
-        {/* ====================================================== */}
-        {/* Opportunity Details */}
-        {/* ====================================================== */}
-
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-
-          <h2 className="text-xl font-bold mb-6">
-            Opportunity Details
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-
-            {/* Opportunity Number */}
-
-            <div>
-
-              <label className="block text-sm font-semibold mb-2">
-                Opportunity Number
-              </label>
-
-              <input
-                readOnly
-                value={
-                  editedOpportunity.opportunity_number
-                }
-                className="w-full rounded-lg border bg-slate-100 px-4 py-3"
-              />
-
-            </div>
-
-            {/* Status */}
-
-            <div>
-
-              <label className="block text-sm font-semibold mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Status
               </label>
 
@@ -142,7 +103,7 @@ export default function OpportunityWorkspace({
                     e.target.value
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3"
               >
                 <option>New</option>
                 <option>Contacted</option>
@@ -155,11 +116,27 @@ export default function OpportunityWorkspace({
 
             </div>
 
+          </div>
+
+        </div>
+
+        {/* ====================================================== */}
+        {/* Opportunity Details */}
+        {/* ====================================================== */}
+
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
+
+          <h2 className="mb-6 text-xl font-bold text-slate-900">
+            Opportunity Details
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-2">
+
             {/* Title */}
 
             <div className="md:col-span-2">
 
-              <label className="block text-sm font-semibold mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Opportunity Title
               </label>
 
@@ -172,7 +149,7 @@ export default function OpportunityWorkspace({
                   )
                 }
                 placeholder="Install CCTV, Replace Fence..."
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3"
               />
 
             </div>
@@ -181,7 +158,7 @@ export default function OpportunityWorkspace({
 
             <div>
 
-              <label className="block text-sm font-semibold mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Customer ID
               </label>
 
@@ -193,17 +170,17 @@ export default function OpportunityWorkspace({
                     e.target.value
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3"
               />
 
             </div>
 
-            {/* Property */}
+            {/* Service Address */}
 
             <div>
 
-              <label className="block text-sm font-semibold mb-2">
-                Property ID
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Service Address
               </label>
 
               <input
@@ -214,31 +191,16 @@ export default function OpportunityWorkspace({
                     e.target.value
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3"
               />
 
             </div>
-
-          </div>
-
-        </div>
-                {/* ====================================================== */}
-        {/* Financial & Scheduling */}
-        {/* ====================================================== */}
-
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-
-          <h2 className="text-xl font-bold mb-6">
-            Financial & Scheduling
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
 
             {/* Estimated Value */}
 
             <div>
 
-              <label className="block text-sm font-semibold mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Estimated Value
               </label>
 
@@ -260,18 +222,17 @@ export default function OpportunityWorkspace({
                         : Number(e.target.value)
                     )
                   }
-                  className="w-full rounded-lg border pl-8 pr-4 py-3"
+                  className="w-full rounded-lg border border-slate-300 pl-8 pr-4 py-3"
                 />
 
               </div>
 
             </div>
-
-            {/* Expected Start Date */}
+                        {/* Expected Start Date */}
 
             <div>
 
-              <label className="block text-sm font-semibold mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Expected Start Date
               </label>
 
@@ -284,28 +245,28 @@ export default function OpportunityWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3"
               />
 
             </div>
 
           </div>
 
+        </div>
+
         {/* ====================================================== */}
         {/* Description */}
         {/* ====================================================== */}
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <h2 className="text-xl font-bold mb-6">
-            Opportunity Description
+          <h2 className="mb-6 text-xl font-bold text-slate-900">
+            Description
           </h2>
 
           <textarea
             rows={6}
-            value={
-              editedOpportunity.description ?? ""
-            }
+            value={editedOpportunity.description ?? ""}
             onChange={(e) =>
               updateField(
                 "description",
@@ -313,58 +274,19 @@ export default function OpportunityWorkspace({
               )
             }
             placeholder="Describe the work requested by the customer..."
-            className="w-full rounded-lg border px-4 py-3 resize-none"
+            className="w-full rounded-lg border border-slate-300 px-4 py-3 resize-none"
           />
 
         </div>
 
         {/* ====================================================== */}
-        {/* Opportunity Summary */}
+        {/* Notes */}
         {/* ====================================================== */}
 
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-sm p-8 mb-6 border border-blue-100">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <div>
-              <p className="text-sm text-slate-500">Status</p>
-              <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.opportunity_status}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Estimated Value</p>
-              <p className="mt-2 text-xl font-bold text-green-600">
-                $
-                {(editedOpportunity.estimated_value ?? 0).toLocaleString(
-                  undefined,
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Source</p>
-              <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.source}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Expected Close</p>
-              <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedOpportunity.expected_start_date || "Not Set"}
-              </p>
-            </div>
-          </div>
-        </div>
-                {/* ====================================================== */}
-        {/* Internal Notes */}
-        {/* ====================================================== */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-
-          <h2 className="text-xl font-bold mb-6">
-            Internal Notes
+          <h2 className="mb-6 text-xl font-bold text-slate-900">
+            Notes
           </h2>
 
           <textarea
@@ -377,7 +299,7 @@ export default function OpportunityWorkspace({
               )
             }
             placeholder="Record conversations, site visit findings, customer requests and other internal notes..."
-            className="w-full rounded-lg border px-4 py-3 resize-none"
+            className="w-full rounded-lg border border-slate-300 px-4 py-3 resize-none"
           />
 
         </div>
@@ -386,197 +308,90 @@ export default function OpportunityWorkspace({
         {/* Related Records */}
         {/* ====================================================== */}
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <h2 className="text-xl font-bold mb-6">
+          <h2 className="mb-6 text-xl font-bold text-slate-900">
             Related Records
           </h2>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="divide-y divide-slate-200">
 
-            {/* Quotes */}
-
-            <div className="rounded-xl border border-slate-200 p-6 hover:shadow-md transition">
-
-              <div className="text-4xl mb-4">
-                📄
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left hover:bg-slate-50 transition"
+            >
+              <div>
+                <h3 className="font-semibold text-slate-800">
+                  Quotes
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Create and manage customer quotes.
+                </p>
               </div>
 
-              <h3 className="font-semibold text-lg">
-                Quotes
-              </h3>
+              <span className="text-slate-400 text-xl">
+                →
+              </span>
 
-              <p className="mt-2 text-sm text-slate-500">
-                Create and manage quote versions for this opportunity.
-              </p>
+            </button>
 
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg bg-blue-600 py-2 font-semibold text-white hover:bg-blue-700 transition"
-              >
-                View Quotes
-              </button>
-
-            </div>
-
-            {/* Jobs */}
-
-            <div className="rounded-xl border border-slate-200 p-6 hover:shadow-md transition">
-
-              <div className="text-4xl mb-4">
-                📅
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left hover:bg-slate-50 transition"
+            >
+              <div>
+                <h3 className="font-semibold text-slate-800">
+                  Calendar
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Site visits and scheduled work.
+                </p>
               </div>
 
-              <h3 className="font-semibold text-lg">
-                Jobs
-              </h3>
+              <span className="text-slate-400 text-xl">
+                →
+              </span>
 
-              <p className="mt-2 text-sm text-slate-500">
-                Jobs created once the opportunity is accepted.
-              </p>
+            </button>
 
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg bg-emerald-600 py-2 font-semibold text-white hover:bg-emerald-700 transition"
-              >
-                View Jobs
-              </button>
-
-            </div>
-
-            {/* Documents */}
-
-            <div className="rounded-xl border border-slate-200 p-6 hover:shadow-md transition">
-
-              <div className="text-4xl mb-4">
-                📁
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left hover:bg-slate-50 transition"
+            >
+              <div>
+                <h3 className="font-semibold text-slate-800">
+                  Invoices
+                </h3>
+                <p className="text-sm text-slate-500">
+                  View invoices linked to this opportunity.
+                </p>
               </div>
 
-              <h3 className="font-semibold text-lg">
-                Documents
-              </h3>
+              <span className="text-slate-400 text-xl">
+                →
+              </span>
 
-              <p className="mt-2 text-sm text-slate-500">
-                Store plans, permits and customer documents.
-              </p>
+            </button>
 
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg bg-purple-600 py-2 font-semibold text-white hover:bg-purple-700 transition"
-              >
-                Open Documents
-              </button>
-
-            </div>
-
-            {/* Photos */}
-
-            <div className="rounded-xl border border-slate-200 p-6 hover:shadow-md transition">
-
-              <div className="text-4xl mb-4">
-                📷
+            <button
+              type="button"
+              onClick={() => setShowPhotos(true)}
+              className="flex w-full items-center justify-between py-4 text-left hover:bg-slate-50 transition"
+            >
+              <div>
+                <h3 className="font-semibold text-slate-800">
+                  Photos
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Site inspection and progress photos.
+                </p>
               </div>
 
-              <h3 className="font-semibold text-lg">
-                Photos
-              </h3>
+              <span className="text-slate-400 text-xl">
+                →
+              </span>
 
-              <p className="mt-2 text-sm text-slate-500">
-                Site inspections, before and after photos.
-              </p>
-
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg bg-orange-500 py-2 font-semibold text-white hover:bg-orange-600 transition"
-              >
-                View Photos
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ====================================================== */}
-        {/* Opportunity Timeline */}
-        {/* ====================================================== */}
-
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-
-          <div className="flex items-center justify-between mb-6">
-
-            <h2 className="text-xl font-bold">
-              Activity Timeline
-            </h2>
-
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
-              Coming Soon
-            </span>
-
-          </div>
-
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-10">
-
-            <div className="text-center">
-
-              <div className="text-5xl mb-4">
-                📈
-              </div>
-
-              <h3 className="text-lg font-semibold text-slate-700">
-                Opportunity Timeline
-              </h3>
-
-              <p className="mt-2 text-slate-500">
-                Every interaction will appear here, including site visits,
-                emails, quotes, phone calls, status changes and completed jobs.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ====================================================== */}
-        {/* Sales Pipeline */}
-        {/* ====================================================== */}
-
-        <div className="rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-blue-100 p-8 mb-8">
-
-          <h2 className="text-xl font-bold mb-6">
-            Sales Pipeline
-          </h2>
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-7">
-
-            {[
-  "New",
-  "Contacted",
-  "Site Visit Booked",
-  "Quoted",
-  "Won",
-  "Lost",
-  "Cancelled",
-].map((stage) => (
-
-              <div
-                key={stage}
-                className={`rounded-xl border p-4 text-center transition ${
-                  editedOpportunity.opportunity_status === stage
-                    ? "border-blue-600 bg-blue-600 text-white shadow-lg"
-                    : "border-slate-200 bg-white"
-                }`}
-              >
-
-                <div className="text-sm font-semibold">
-                  {stage}
-                </div>
-
-              </div>
-
-            ))}
+            </button>
 
           </div>
 
@@ -585,31 +400,28 @@ export default function OpportunityWorkspace({
         {/* Actions */}
         {/* ====================================================== */}
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-10">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 mb-10">
 
-          <div className="flex flex-wrap items-center justify-between gap-4">
-
-            {/* Left */}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
             <div>
 
-              <h3 className="text-lg font-semibold text-slate-800">
-                Opportunity Actions
-              </h3>
+              <h2 className="text-xl font-bold text-slate-900">
+                Actions
+              </h2>
 
               <p className="mt-1 text-sm text-slate-500">
-                Save your changes, create a quote or convert this opportunity into a job.
+                Save your changes, create a quote or remove this opportunity.
               </p>
 
             </div>
-
-            {/* Right */}
 
             <div className="flex flex-wrap gap-3">
 
               {/* Save */}
 
               <button
+                type="button"
                 onClick={async () => {
                   try {
 
@@ -650,7 +462,7 @@ export default function OpportunityWorkspace({
 
                   }
                 }}
-                className="rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-800"
+                className="rounded-lg bg-slate-900 px-6 py-3 font-semibold text-white hover:bg-slate-800 transition"
               >
                 💾 Save Opportunity
               </button>
@@ -658,35 +470,60 @@ export default function OpportunityWorkspace({
               {/* Create Quote */}
 
               <button
-  type="button"
-  onClick={() => {
-
-    router.push(
-  `/quotes?customer=${editedOpportunity.customer_id}&opportunity=${editedOpportunity.id}&property=${editedOpportunity.property_id}`
-);
-
-  }}
-  className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
->
-  📄 Create Quote
-</button>
-
-              {/* Convert to Job */}
-
-              <button
                 type="button"
-                className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700"
-              >
-                ✔ Convert to Job
-              </button>
+                onClick={async () => {
 
-              {/* Email Customer */}
+                  try {
 
-              <button
-                type="button"
-                className="rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700"
+                    const response = await fetch(
+                      "/api/quotes/create-from-opportunity",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          opportunityId:
+                            editedOpportunity.id,
+                        }),
+                      }
+                    );
+
+                    const result =
+                      await response.json();
+
+                    if (
+                      !response.ok ||
+                      !result.success
+                    ) {
+                      throw new Error(
+                        result.message ??
+                          "Unable to create quote."
+                      );
+                    }
+
+                    alert(
+                      `Quote #${result.quoteNumber} created successfully.`
+                    );
+
+                    router.push(
+                      `/quotes?quote=${result.quoteId}`
+                    );
+
+                  } catch (error) {
+
+                    console.error(error);
+
+                    alert(
+                      "Unable to create quote."
+                    );
+
+                  }
+
+                }}
+                className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition"
               >
-                📧 Email Customer
+                📄 Create Quote
               </button>
 
               {/* Delete */}
@@ -694,6 +531,7 @@ export default function OpportunityWorkspace({
               {!isNewOpportunity && (
 
                 <button
+                  type="button"
                   onClick={async () => {
 
                     if (
@@ -725,9 +563,9 @@ export default function OpportunityWorkspace({
                     }
 
                   }}
-                  className="rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+                  className="rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700 transition"
                 >
-                  🗑 Delete
+                  🗑 Delete Opportunity
                 </button>
 
               )}
@@ -739,6 +577,22 @@ export default function OpportunityWorkspace({
         </div>
 
       </div>
+
+      {/* ====================================================== */}
+      {/* Photo Gallery */}
+      {/* ====================================================== */}
+
+      <Modal
+        isOpen={showPhotos}
+        onClose={() => setShowPhotos(false)}
+        title="Opportunity Photos"
+        size="7xl"
+      >
+        <PhotoGallery
+          opportunityId={editedOpportunity.id}
+          title="Opportunity Photos"
+        />
+      </Modal>
 
     </div>
 

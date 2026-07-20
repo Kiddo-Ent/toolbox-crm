@@ -1,108 +1,214 @@
 "use client";
 
-import { useMemo } from "react";
 import { QuoteItem } from "@/types/quoteItem";
 
 interface QuoteItemsGridProps {
-  items?: QuoteItem[];
-  onItemsChange: (items: QuoteItem[]) => void;
-  onSaveItem?: (item: QuoteItem) => Promise<void>;
-  onDeleteItem?: (id: string) => Promise<void>;
-  onAddItem?: () => Promise<void>;
+  items: QuoteItem[];
+
+  onItemsChange: (
+    items: QuoteItem[]
+  ) => void;
+
+  onAddItem: () => void;
+
+  onSaveItem: (
+    item: QuoteItem
+  ) => Promise<void>;
+
+  onDeleteItem: (
+    id: string
+  ) => Promise<void>;
+}
+
+function currency(value: number) {
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export default function QuoteItemsGrid({
   items,
   onItemsChange,
+  onAddItem,
   onSaveItem,
   onDeleteItem,
-  onAddItem,
 }: QuoteItemsGridProps) {
-  // Always work with an array
-  const safeItems = items ?? [];
 
-  function updateItem<K extends keyof QuoteItem>(
+  function updateItem(
     id: string,
-    field: K,
-    value: QuoteItem[K]
+    field: keyof QuoteItem,
+    value: string | number
   ) {
-    onItemsChange(
-      safeItems.map((item) => {
-        if (item.id !== id) return item;
 
-        const updated = {
-          ...item,
-          [field]: value,
-        };
+    const updatedItems = items.map((item) => {
 
-        const qty = Number(updated.quantity) || 0;
-        const rate = Number(updated.unit_price) || 0;
-        const disc = Number(updated.discount) || 0;
+      if (item.id !== id) {
+        return item;
+      }
 
-        updated.line_total =
-          qty * rate * (1 - disc / 100);
+      const updated: QuoteItem = {
+        ...item,
+        [field]: value,
+      } as QuoteItem;
 
-        return updated;
-      })
-    );
+      const subtotal =
+        updated.quantity *
+        updated.unit_price;
+
+      const discountAmount =
+        subtotal *
+        (updated.discount / 100);
+
+      updated.line_total =
+        subtotal -
+        discountAmount;
+
+      return updated;
+
+    });
+
+    onItemsChange(updatedItems);
+
   }
 
-  const totals = useMemo(() => {
-    const materials = safeItems
-      .filter(
-        (i) => i.item_type === "Material"
-      )
-      .reduce(
-        (sum, i) => sum + i.line_total,
-        0
-      );
-
-    const labour = safeItems
-      .filter(
-        (i) => i.item_type !== "Material"
-      )
-      .reduce(
-        (sum, i) => sum + i.line_total,
-        0
-      );
-
-    const subtotal =
-      materials + labour;
-
-    const gst = safeItems.reduce(
-      (sum, i) =>
-        sum +
-        i.line_total *
-          (i.gst_rate / 100),
-      0
-    );
-
-    return {
-      materials,
-      labour,
-      subtotal,
-      gst,
-      total: subtotal + gst,
-    };
-  }, [safeItems]);
-
   return (
-    <div className="rounded-xl bg-white p-6 shadow">
+
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       {/* Header */}
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="flex items-center justify-between border-b p-6">
 
-        <h2 className="text-2xl font-bold">
-          Quote Items
-        </h2>
+        <div>
 
-        <button
-          onClick={() => onAddItem?.()}
-          className="rounded-lg bg-orange-500 px-5 py-2 text-white transition hover:bg-orange-600"
-        >
-          + Add Item
-        </button>
+          <h2 className="text-2xl font-bold text-slate-800">
+            Quote Items
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Materials, labour and other charges.
+          </p>
+
+        </div>
+
+        <div className="flex gap-3">
+
+          <button
+            type="button"
+            onClick={onAddItem}
+            className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+          >
+            + Material
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+
+              const labour: QuoteItem = {
+
+                id: crypto.randomUUID(),
+
+                quote_id:
+                  items[0]?.quote_id ?? "",
+
+                line_number:
+                  items.length + 1,
+
+                item_type: "Labour",
+
+                description: "",
+
+                quantity: 1,
+
+                unit: "hrs",
+
+                unit_price: 0,
+
+                discount: 0,
+
+                gst_rate: 10,
+
+                line_total: 0,
+
+                notes: null,
+
+                created_at: "",
+
+                updated_at: "",
+
+                is_deleted: false,
+
+                deleted_at: null,
+
+              };
+
+              onItemsChange([
+                ...items,
+                labour,
+              ]);
+
+            }}
+            className="rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700"
+          >
+            + Labour
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+
+              const other: QuoteItem = {
+
+                id: crypto.randomUUID(),
+
+                quote_id:
+                  items[0]?.quote_id ?? "",
+
+                line_number:
+                  items.length + 1,
+
+                item_type: "Other",
+
+                description: "",
+
+                quantity: 1,
+
+                unit: "ea",
+
+                unit_price: 0,
+
+                discount: 0,
+
+                gst_rate: 10,
+
+                line_total: 0,
+
+                notes: null,
+
+                created_at: "",
+
+                updated_at: "",
+
+                is_deleted: false,
+
+                deleted_at: null,
+
+              };
+
+              onItemsChange([
+                ...items,
+                other,
+              ]);
+
+            }}
+            className="rounded-xl bg-purple-600 px-5 py-3 font-semibold text-white hover:bg-purple-700"
+          >
+            + Other
+          </button>
+
+        </div>
 
       </div>
 
@@ -112,27 +218,45 @@ export default function QuoteItemsGrid({
 
         <table className="min-w-full">
 
-          <thead className="border-b">
+          <thead className="sticky top-0 z-10 bg-slate-100 shadow-sm">
 
-            <tr className="text-left">
+            <tr>
 
-              <th className="py-2">#</th>
+              <th className="px-4 py-3 text-left">
+                #
+              </th>
 
-              <th>Description</th>
+              <th className="px-4 py-3 text-left">
+                Qty
+              </th>
 
-              <th>Qty</th>
+              <th className="px-4 py-3 text-left">
+                Description
+              </th>
 
-              <th>Unit</th>
+              <th className="px-4 py-3 text-left">
+                Unit
+              </th>
 
-              <th>Rate</th>
+              <th className="px-4 py-3 text-right">
+                Rate
+              </th>
 
-              <th>Disc %</th>
+              <th className="px-4 py-3 text-right">
+                Discount
+              </th>
 
-              <th className="text-right">
+              <th className="px-4 py-3 text-right">
+                GST
+              </th>
+
+              <th className="px-4 py-3 text-right">
                 Total
               </th>
 
-              <th></th>
+              <th className="px-4 py-3 text-center">
+                Actions
+              </th>
 
             </tr>
 
@@ -140,55 +264,78 @@ export default function QuoteItemsGrid({
 
           <tbody>
 
-            {safeItems.length === 0 && (
+            {items.length === 0 && (
 
               <tr>
 
                 <td
-                  colSpan={8}
-                  className="py-12 text-center text-slate-500"
+                  colSpan={10}
+                  className="py-16 text-center text-slate-500"
                 >
+                  No items have been added yet.
 
-                  <div className="text-4xl">
-                    📦
-                  </div>
-
-                  <div className="mt-4 text-lg font-semibold">
-
-                    No Quote Items
-
-                  </div>
-
-                  <div className="mt-2">
-
-                    Click <strong>+ Add Item</strong> to
-                    start building this quote.
-
-                  </div>
-
+Use the buttons above to add
+Materials, Labour or Other charges.
                 </td>
 
               </tr>
 
             )}
 
-            {safeItems.map((item) => (
+            {items.map((item) => (
 
               <tr
                 key={item.id}
-                className="border-b"
+                className={`border-t transition hover:bg-slate-50 ${
+  item.item_type === "Material"
+    ? "bg-blue-50/40"
+    : item.item_type === "Labour"
+    ? "bg-emerald-50/40"
+    : "bg-purple-50/40"
+}`}
               >
+<td className="px-4 text-center font-semibold text-slate-500">
+  {item.line_number}
+</td>
+                <td className="p-3">
 
-                <td>
-                  {item.line_number}
+                  <select
+                    value={item.item_type}
+                    onChange={(e) =>
+                      updateItem(
+                        item.id,
+                        "item_type",
+                        e.target.value
+                      )
+                    }
+                    className="rounded-lg border px-2 py-2"
+                  >
+                    <option>Material</option>
+                    <option>Labour</option>
+                    <option>Other</option>
+                  </select>
+
+                </td>
+                                <td className="p-3">
+                  <input
+                    type="number"
+                    min={0}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateItem(
+                        item.id,
+                        "quantity",
+                        Number(e.target.value)
+                      )
+                    }
+                    className="w-20 rounded-lg border px-3 py-2 text-right"
+                  />
                 </td>
 
-                <td>
-
+                <td className="p-3">
                   <input
-                    value={
-                      item.description
-                    }
+                    type="text"
+                    value={item.description}
                     onChange={(e) =>
                       updateItem(
                         item.id,
@@ -196,35 +343,14 @@ export default function QuoteItemsGrid({
                         e.target.value
                       )
                     }
-                    className="w-full rounded border px-2 py-1"
+                    placeholder="Description..."
+                    className="w-full min-w-[260px] rounded-lg border px-3 py-2"
                   />
-
                 </td>
 
-                <td>
-
+                <td className="p-3">
                   <input
-                    type="number"
-                    value={
-                      item.quantity
-                    }
-                    onChange={(e) =>
-                      updateItem(
-                        item.id,
-                        "quantity",
-                        Number(
-                          e.target.value
-                        )
-                      )
-                    }
-                    className="w-20 rounded border px-2 py-1"
-                  />
-
-                </td>
-
-                <td>
-
-                  <input
+                    type="text"
                     value={item.unit}
                     onChange={(e) =>
                       updateItem(
@@ -233,81 +359,85 @@ export default function QuoteItemsGrid({
                         e.target.value
                       )
                     }
-                    className="w-20 rounded border px-2 py-1"
+                    className="w-20 rounded-lg border px-3 py-2 text-center"
                   />
-
                 </td>
 
-                <td>
-
+                <td className="p-3">
                   <input
                     type="number"
-                    value={
-                      item.unit_price
-                    }
+                    step="0.01"
+                    value={item.unit_price}
                     onChange={(e) =>
                       updateItem(
                         item.id,
                         "unit_price",
-                        Number(
-                          e.target.value
-                        )
+                        Number(e.target.value)
                       )
                     }
-                    className="w-24 rounded border px-2 py-1"
+                    className="w-28 rounded-lg border px-3 py-2 text-right"
                   />
-
                 </td>
 
-                <td>
-
+                <td className="p-3">
                   <input
                     type="number"
-                    value={
-                      item.discount
-                    }
+                    step="0.01"
+                    value={item.discount}
                     onChange={(e) =>
                       updateItem(
                         item.id,
                         "discount",
-                        Number(
-                          e.target.value
-                        )
+                        Number(e.target.value)
                       )
                     }
-                    className="w-20 rounded border px-2 py-1"
+                    className="w-24 rounded-lg border px-3 py-2 text-right"
                   />
-
                 </td>
 
-                <td className="text-right font-semibold">
-
-                  $
-                  {item.line_total.toFixed(
-                    2
-                  )}
-
-                </td>
-
-                <td className="space-x-2">
-
-                  <button
-                    onClick={() =>
-                      onSaveItem?.(item)
-                    }
-                  >
-                    💾
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      onDeleteItem?.(
-                        item.id
+                <td className="p-3">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={item.gst_rate}
+                    onChange={(e) =>
+                      updateItem(
+                        item.id,
+                        "gst_rate",
+                        Number(e.target.value)
                       )
                     }
-                  >
-                    🗑
-                  </button>
+                    className="w-20 rounded-lg border px-3 py-2 text-right"
+                  />
+                </td>
+
+                <td className="p-3 text-right font-semibold text-lg font-bold text-emerald-700">
+                  ${currency(item.line_total)}
+                </td>
+
+                <td className="p-3">
+
+                  <div className="flex justify-center gap-2">
+
+                    <button
+                      type="button"
+                      onClick={() => onSaveItem(item)}
+                      className="rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white hover:bg-green-700"
+                    >
+                      Save
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onDeleteItem(item.id)
+                      }
+                      className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
 
                 </td>
 
@@ -320,78 +450,8 @@ export default function QuoteItemsGrid({
         </table>
 
       </div>
+          </div>
 
-      {/* Totals */}
-
-      <div className="ml-auto mt-8 max-w-sm space-y-2">
-
-        <div className="flex justify-between">
-
-          <span>Materials</span>
-
-          <span>
-            $
-            {totals.materials.toFixed(
-              2
-            )}
-          </span>
-
-        </div>
-
-        <div className="flex justify-between">
-
-          <span>Labour</span>
-
-          <span>
-            $
-            {totals.labour.toFixed(
-              2
-            )}
-          </span>
-
-        </div>
-
-        <div className="flex justify-between border-t pt-2">
-
-          <span>Subtotal</span>
-
-          <span>
-            $
-            {totals.subtotal.toFixed(
-              2
-            )}
-          </span>
-
-        </div>
-
-        <div className="flex justify-between">
-
-          <span>GST</span>
-
-          <span>
-            $
-            {totals.gst.toFixed(
-              2
-            )}
-          </span>
-
-        </div>
-
-        <div className="flex justify-between border-t pt-2 text-xl font-bold">
-
-          <span>Total</span>
-
-          <span>
-            $
-            {totals.total.toFixed(
-              2
-            )}
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
   );
+
 }

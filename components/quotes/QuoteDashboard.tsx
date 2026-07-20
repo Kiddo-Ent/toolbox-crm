@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Quote } from "@/types/quote";
 import { useQuotes } from "@/hooks/useQuotes";
-
+import { useSearchParams } from "next/navigation";
 import QuoteStats from "./QuoteStats";
 import QuoteToolbar from "./QuoteToolbar";
 import QuoteList from "./QuoteList";
@@ -25,15 +25,46 @@ export default function QuoteDashboard() {
     useState<Quote | null>(null);
 
   const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+
+const quoteId = searchParams.get("quote");
 
   useEffect(() => {
-    if (
-      quotes.length > 0 &&
-      !selectedQuote
-    ) {
-      setSelectedQuote(quotes[0]);
+
+  if (quotes.length === 0) {
+    return;
+  }
+
+  if (quoteId) {
+
+    const quote =
+      quotes.find(
+        (q) => q.id === quoteId
+      );
+
+    if (quote) {
+
+      setSelectedQuote(quote);
+
+      return;
+
     }
-  }, [quotes, selectedQuote]);
+
+  }
+
+  if (!selectedQuote) {
+
+    setSelectedQuote(
+      quotes[0]
+    );
+
+  }
+
+}, [
+  quotes,
+  quoteId,
+  selectedQuote,
+]);
 
   function createNewQuote() {
     const today =

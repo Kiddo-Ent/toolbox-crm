@@ -54,67 +54,72 @@ export default function CustomerWorkspace({
 
   return (
 
-    <div className="h-full overflow-y-auto rounded-2xl bg-white shadow-sm">
+    <div className="h-full overflow-y-auto rounded-xl bg-white">
 
       {/* Header */}
 
-      <div className="sticky top-0 z-10 border-b bg-white p-8">
+      <div className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-5">
 
         <div className="flex items-center justify-between">
 
           <div>
 
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h2 className="text-2xl font-bold text-slate-800">
 
               {isNewCustomer
                 ? "New Customer"
                 : `${editedCustomer.first_name} ${editedCustomer.last_name}`}
 
-            </h1>
+            </h2>
 
-            <p className="mt-2 text-slate-500">
+            <p className="mt-1 text-sm text-slate-500">
 
               {isNewCustomer
-                ? "Create a new customer record."
+                ? "Create a new customer."
                 : `Customer #${editedCustomer.customer_number}`}
 
             </p>
 
           </div>
 
-          <span
-            className={`rounded-full px-4 py-2 text-sm font-semibold ${
+          <button
+            type="button"
+            onClick={() =>
+              updateField(
+                "is_active",
+                !editedCustomer.is_active
+              )
+            }
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               editedCustomer.is_active
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-slate-200 text-slate-700"
+                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                : "bg-slate-200 text-slate-700 hover:bg-slate-300"
             }`}
           >
             {editedCustomer.is_active
-              ? "Active"
-              : "Inactive"}
-          </span>
+              ? "● Active"
+              : "○ Inactive"}
+          </button>
 
         </div>
 
       </div>
 
-      <div className="p-8">
+      <div className="space-y-6 p-6">
 
-        {/* ====================================== */}
-        {/* Personal Details */}
-        {/* ====================================== */}
+        {/* Customer Details */}
 
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
+        <section className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <h2 className="mb-6 text-xl font-bold">
-            Personal Details
-          </h2>
+          <h3 className="mb-6 text-lg font-semibold text-slate-800">
+            Customer Details
+          </h3>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-5 md:grid-cols-2">
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 First Name
               </label>
 
@@ -126,14 +131,14 @@ export default function CustomerWorkspace({
                     e.target.value
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Last Name
               </label>
 
@@ -145,15 +150,15 @@ export default function CustomerWorkspace({
                     e.target.value
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div className="md:col-span-2">
 
-              <label className="mb-2 block text-sm font-semibold">
-                Company Name
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Company
               </label>
 
               <input
@@ -164,31 +169,15 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
-          </div>
-
-        </div>
-
-        {/* ====================================== */}
-        {/* Contact Details */}
-        {/* ====================================== */}
-
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-xl font-bold">
-            Contact Details
-          </h2>
-
-          <div className="grid gap-6 md:grid-cols-2">
-
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
-                Mobile Phone
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Mobile
               </label>
 
               <input
@@ -199,15 +188,15 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
-                Home Phone
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Home
               </label>
 
               <input
@@ -218,15 +207,15 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div className="md:col-span-2">
 
-              <label className="mb-2 block text-sm font-semibold">
-                Email Address
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Email
               </label>
 
               <input
@@ -238,30 +227,14 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
+                        <div className="md:col-span-2">
 
-          </div>
-
-        </div>
-                {/* ====================================== */}
-        {/* Address */}
-        {/* ====================================== */}
-
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-xl font-bold">
-            Address
-          </h2>
-
-          <div className="grid gap-6 md:grid-cols-2">
-
-            <div className="md:col-span-2">
-
-              <label className="mb-2 block text-sm font-semibold">
-                Address Line 1
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Street Address
               </label>
 
               <input
@@ -272,15 +245,15 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div className="md:col-span-2">
 
-              <label className="mb-2 block text-sm font-semibold">
-                Address Line 2
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Unit / Suite
               </label>
 
               <input
@@ -291,14 +264,14 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Suburb
               </label>
 
@@ -310,18 +283,18 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 State
               </label>
 
-              <input
+              <select
                 value={editedCustomer.state ?? ""}
                 onChange={(e) =>
                   updateField(
@@ -329,14 +302,24 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
-              />
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
+              >
+                <option value="">Select State</option>
+                <option value="VIC">Victoria</option>
+                <option value="NSW">New South Wales</option>
+                <option value="QLD">Queensland</option>
+                <option value="SA">South Australia</option>
+                <option value="WA">Western Australia</option>
+                <option value="TAS">Tasmania</option>
+                <option value="ACT">Australian Capital Territory</option>
+                <option value="NT">Northern Territory</option>
+              </select>
 
             </div>
 
             <div>
 
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Postcode
               </label>
 
@@ -348,24 +331,22 @@ export default function CustomerWorkspace({
                     e.target.value || null
                   )
                 }
-                className="w-full rounded-lg border px-4 py-3"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
               />
 
             </div>
 
           </div>
 
-        </div>
+        </section>
 
-        {/* ====================================== */}
-        {/* Notes */}
-        {/* ====================================== */}
+        {/* Customer Notes */}
 
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
+        <section className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <h2 className="mb-6 text-xl font-bold">
-            Customer Notes
-          </h2>
+          <h3 className="mb-6 text-lg font-semibold text-slate-800">
+            Notes
+          </h3>
 
           <textarea
             rows={8}
@@ -377,494 +358,235 @@ export default function CustomerWorkspace({
               )
             }
             placeholder="Enter any notes about this customer..."
-            className="w-full resize-none rounded-lg border px-4 py-3"
+            className="w-full resize-none rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
           />
 
-        </div>
+        </section>
 
-        {/* ====================================== */}
-        {/* Customer Summary */}
-        {/* ====================================== */}
+        {/* Related Records */}
 
-        <div className="mb-6 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-8">
+        <section className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <h2 className="mb-6 text-xl font-bold">
-            Customer Summary
-          </h2>
+          <h3 className="mb-6 text-lg font-semibold text-slate-800">
+            Related Records
+          </h3>
 
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-
-            <div>
-
-              <p className="text-sm text-slate-500">
-                Customer No
-              </p>
-
-              <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedCustomer.customer_number || "New"}
-              </p>
-
-            </div>
-
-            <div>
-
-              <p className="text-sm text-slate-500">
-                Status
-              </p>
-
-              <p className="mt-2 text-xl font-bold text-slate-800">
-                {editedCustomer.is_active
-                  ? "Active"
-                  : "Inactive"}
-              </p>
-
-            </div>
-
-            <div>
-
-              <p className="text-sm text-slate-500">
-                Email
-              </p>
-
-              <p className="mt-2 font-semibold text-slate-700 break-all">
-                {editedCustomer.email || "-"}
-              </p>
-
-            </div>
-
-            <div>
-
-              <p className="text-sm text-slate-500">
-                Mobile
-              </p>
-
-              <p className="mt-2 font-semibold text-slate-700">
-                {editedCustomer.mobile_phone || "-"}
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ====================================== */}
-        {/* Customer Status */}
-        {/* ====================================== */}
-
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-xl font-bold">
-            Customer Status
-          </h2>
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <h3 className="font-semibold text-slate-800">
-                Active Customer
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Inactive customers remain in the database but
-                will no longer appear in normal searches.
-              </p>
-
-            </div>
+          <div className="divide-y divide-slate-200">
 
             <button
               type="button"
-              onClick={() =>
-                updateField(
-                  "is_active",
-                  !editedCustomer.is_active
-                )
-              }
-              className={`rounded-xl px-6 py-3 font-semibold text-white transition ${
-                editedCustomer.is_active
-                  ? "bg-emerald-600 hover:bg-emerald-700"
-                  : "bg-slate-500 hover:bg-slate-600"
-              }`}
+              className="flex w-full items-center justify-between py-4 text-left transition hover:bg-slate-50"
             >
-              {editedCustomer.is_active
-                ? "Active"
-                : "Inactive"}
+              <div>
+
+                <p className="font-medium text-slate-800">
+                  Service Addresses
+                </p>
+
+                <p className="text-sm text-slate-500">
+                  Manage additional service locations.
+                </p>
+
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+                0
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left transition hover:bg-slate-50"
+            >
+              <div>
+
+                <p className="font-medium text-slate-800">
+                  Opportunities
+                </p>
+
+                <p className="text-sm text-slate-500">
+                  View sales opportunities.
+                </p>
+
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+                0
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left transition hover:bg-slate-50"
+            >
+              <div>
+
+                <p className="font-medium text-slate-800">
+                  Quotes
+                </p>
+
+                <p className="text-sm text-slate-500">
+                  View customer quotations.
+                </p>
+
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+                0
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left transition hover:bg-slate-50"
+            >
+              <div>
+
+                <p className="font-medium text-slate-800">
+                  Calendar
+                </p>
+
+                <p className="text-sm text-slate-500">
+                  View scheduled work.
+                </p>
+
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+                0
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              className="flex w-full items-center justify-between py-4 text-left transition hover:bg-slate-50"
+            >
+              <div>
+
+                <p className="font-medium text-slate-800">
+                  Invoices
+                </p>
+
+                <p className="text-sm text-slate-500">
+                  View customer invoices.
+                </p>
+
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+                0
+              </span>
+
             </button>
 
           </div>
 
-        </div>
-                {/* ====================================== */}
-        {/* Related Records */}
-        {/* ====================================== */}
+        </section>
 
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-xl font-bold">
-            Related Records
-          </h2>
-
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-
-            {/* Properties */}
-
-            <div className="rounded-xl border border-slate-200 p-6">
-
-              <div className="mb-4 text-4xl">
-                🏡
-              </div>
-
-              <h3 className="font-semibold text-slate-800">
-                Properties
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                View all properties owned by this customer.
-              </p>
-
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
-              >
-                View Properties
-              </button>
-
-            </div>
-
-            {/* Opportunities */}
-
-            <div className="rounded-xl border border-slate-200 p-6">
-
-              <div className="mb-4 text-4xl">
-                💼
-              </div>
-
-              <h3 className="font-semibold text-slate-800">
-                Opportunities
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Review current and previous sales opportunities.
-              </p>
-
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100"
-              >
-                View Opportunities
-              </button>
-
-            </div>
-
-            {/* Quotes */}
-
-            <div className="rounded-xl border border-slate-200 p-6">
-
-              <div className="mb-4 text-4xl">
-                📄
-              </div>
-
-              <h3 className="font-semibold text-slate-800">
-                Quotes
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                View quotations created for this customer.
-              </p>
-
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700 transition hover:bg-orange-100"
-              >
-                View Quotes
-              </button>
-
-            </div>
-
-            {/* Jobs */}
-
-            <div className="rounded-xl border border-slate-200 p-6">
-
-              <div className="mb-4 text-4xl">
-                🛠️
-              </div>
-
-              <h3 className="font-semibold text-slate-800">
-                Jobs
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Review completed and scheduled jobs.
-              </p>
-
-              <button
-                type="button"
-                className="mt-6 w-full rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
-              >
-                View Jobs
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ====================================== */}
-        {/* Activity Timeline */}
-        {/* ====================================== */}
-
-        <div className="mb-6 rounded-2xl bg-white p-8 shadow-sm">
-
-          <h2 className="mb-6 text-xl font-bold">
-            Recent Activity
-          </h2>
-
-          <div className="space-y-5">
-
-            <div className="flex items-start gap-4">
-
-              <div className="mt-1 text-2xl">
-                👤
-              </div>
-
-              <div>
-
-                <p className="font-semibold text-slate-800">
-                  Customer record created
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  This timeline will automatically display customer activity.
-                </p>
-
-              </div>
-
-            </div>
-
-            <div className="flex items-start gap-4">
-
-              <div className="mt-1 text-2xl">
-                📄
-              </div>
-
-              <div>
-
-                <p className="font-semibold text-slate-800">
-                  Future quote activity
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  Quotes, emails and approvals will appear here.
-                </p>
-
-              </div>
-
-            </div>
-
-            <div className="flex items-start gap-4">
-
-              <div className="mt-1 text-2xl">
-                🛠️
-              </div>
-
-              <div>
-
-                <p className="font-semibold text-slate-800">
-                  Future job activity
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  Scheduled jobs, completions and invoices will appear here.
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-                {/* ====================================== */}
         {/* Customer Actions */}
-        {/* ====================================== */}
 
-        <div className="mb-10 rounded-2xl bg-white p-8 shadow-sm">
+<section className="rounded-xl border border-slate-200 bg-white p-6">
 
-          <div className="flex flex-wrap items-center justify-between gap-4">
+  <div className="flex flex-wrap items-center justify-between gap-4">
 
-            <div>
+    <div>
 
-              <h3 className="text-lg font-semibold text-slate-800">
-                Customer Actions
-              </h3>
+      <h3 className="text-lg font-semibold text-slate-800">
+        Customer Actions
+      </h3>
 
-              <p className="mt-1 text-sm text-slate-500">
-                Save, contact or remove this customer.
-              </p>
+      <p className="text-sm text-slate-500">
+        Save or remove this customer.
+      </p>
 
-            </div>
+    </div>
 
-            <div className="flex flex-wrap gap-3">
+    <div className="flex gap-3">
 
-              {/* Save */}
+      <button
+        type="button"
+        onClick={async () => {
+        try {
 
-              <button
-                onClick={async () => {
+        if (isNewCustomer) {
 
-                  try {
+          const {
+            id,
+            created_at,
+            updated_at,
+            ...newCustomer
+          } = editedCustomer;
 
-                    if (isNewCustomer) {
+          await addCustomer(newCustomer);
 
-                      const {
-                        id,
-                        created_at,
-                        updated_at,
-                        ...newCustomer
-                      } = editedCustomer;
+          alert("Customer created successfully.");
 
-                      await addCustomer(newCustomer);
+        } else {
 
-                      alert("✅ Customer created successfully.");
+          await saveCustomer(editedCustomer);
 
-                    } else {
+          alert("Customer saved successfully.");
 
-                      await saveCustomer(
-                        editedCustomer
-                      );
+        }
 
-                      alert("✅ Customer saved successfully.");
+      } catch (err) {
 
-                    }
+        console.error(err);
 
-                  } catch (err) {
+        alert("Unable to save customer.");
 
-                    console.error(err);
+      }
+    }}
+    className="rounded-lg bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-800"
+  >
+    Save Customer
+  </button>
 
-                    alert("Unable to save customer.");
+  {!isNewCustomer && (
 
-                  }
+    <button
+      type="button"
+      onClick={async () => {
 
-                }}
-                className="rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-800"
-              >
-                💾 Save Customer
-              </button>
+        const confirmed = confirm(
+          `Delete ${editedCustomer.first_name} ${editedCustomer.last_name}?`
+        );
 
-              {/* Email */}
+        if (!confirmed) return;
 
-              <button
-                type="button"
-                onClick={() => {
+        try {
 
-                  if (!editedCustomer.email) {
+          await removeCustomer(
+            editedCustomer.id
+          );
 
-                    alert("No email address recorded.");
+          alert("Customer deleted.");
 
-                    return;
+        } catch (err) {
 
-                  }
+          console.error(err);
 
-                  window.location.href =
-                    `mailto:${editedCustomer.email}`;
+          alert("Unable to delete customer.");
 
-                }}
-                className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-              >
-                📧 Email
-              </button>
+        }
 
-              {/* Phone */}
+      }}
+      className="rounded-lg border border-red-200 px-6 py-3 font-semibold text-red-600 transition hover:bg-red-50"
+    >
+      Delete Customer
+    </button>
 
-              <button
-                type="button"
-                onClick={() => {
+  )}
 
-                  if (!editedCustomer.mobile_phone) {
-
-                    alert("No mobile number recorded.");
-
-                    return;
-
-                  }
-
-                  window.location.href =
-                    `tel:${editedCustomer.mobile_phone}`;
-
-                }}
-                className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700"
-              >
-                📞 Call
-              </button>
-
-              {/* Export */}
-
-              <button
-                type="button"
-                onClick={() => {
-
-                  console.log(
-                    "Export Customer",
-                    editedCustomer
-                  );
-
-                  alert(
-                    "Customer export coming soon."
-                  );
-
-                }}
-                className="rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
-              >
-                📄 Export
-              </button>
-
-              {/* Delete */}
-
-              {!isNewCustomer && (
-
-                <button
-                  onClick={async () => {
-
-                    const confirmed = confirm(
-                      `Delete ${editedCustomer.first_name} ${editedCustomer.last_name}?`
-                    );
-
-                    if (!confirmed) return;
-
-                    try {
-
-                      await removeCustomer(
-                        editedCustomer.id
-                      );
-
-                      alert(
-                        "Customer deleted."
-                      );
-
-                    } catch (err) {
-
-                      console.error(err);
-
-                      alert(
-                        "Unable to delete customer."
-                      );
-
-                    }
-
-                  }}
-                  className="rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
-                >
-                  🗑 Delete
-                </button>
-
-              )}
-
-            </div>
+</div>
 
           </div>
 
-        </div>
+        </section>
 
       </div>
 
